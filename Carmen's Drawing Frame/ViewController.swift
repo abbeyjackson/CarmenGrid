@@ -141,41 +141,30 @@ class ViewController: UIViewController, UINavigationControllerDelegate, UIImageP
     
     func scaledWidthOfPhoto(size: CGSize) -> CGFloat {
         let contentScale = contentScaleOfPhoto(size: size)
+        print("in scaled width, width is \(size.width) and content scale is \(contentScale)")
         return size.width * contentScale
     }
     
     func scaledHeightOfPhoto(size: CGSize) -> CGFloat {
         let contentScale = contentScaleOfPhoto(size: size)
+        print("in scaled height, height is \(size.height) and content scale is \(contentScale)")
         return size.height * contentScale
     }
     
-    func boundsForGridView(using size: CGSize) -> CGRect {
+    func landscapeBounds(for size: CGSize) -> CGRect {
         let scaledWidth = scaledWidthOfPhoto(size: size)
         let scaledHeight = scaledHeightOfPhoto(size: size)
         
         let xValue = (photoView.frame.width - scaledWidth) / 2
         let yValue = (photoView.frame.height - scaledHeight) / 2
         
-        return CGRect(x: xValue, y: yValue, width: scaledWidth, height: scaledHeight)
+        let bounds = CGRect(x: xValue, y: yValue, width: scaledWidth, height: scaledHeight)
+        print("landscape bounds: \(bounds) from size: \(size)")
+        return bounds
     }
     
-    func addGridView() {
-        guard let size = photoView.image?.size else { return }
-        print(size)
-        gridView = PhotoGrid()
-        if let gridView = gridView {
-            let bounds = boundsForGridView(using: size)
-            gridView.frame = bounds
-            print(bounds)
-            gridView.backgroundColor = UIColor.clear
-            gridView.alpha = 0.3
-            photoView.addSubview(gridView)
-        }
-    }
-    
-    func setPortraitRotation() {
-        guard let size = photoView.image?.size else { return }
-        print("set portrait with size: \(size)")
+    func portraitBounds(for size: CGSize) -> CGRect {
+        
         let scale = size.height / size.width
         var newWidth = photoParentView.frame.height
         var newHeight = newWidth * scale
@@ -186,10 +175,37 @@ class ViewController: UIViewController, UINavigationControllerDelegate, UIImageP
         
         let xValue = (photoParentView.frame.width - newWidth) / 2
         let yValue = (photoParentView.frame.height - newHeight) / 2
-        let newBounds = CGRect(x: xValue, y: yValue, width: newWidth, height: newHeight)
+        
+        let bounds = CGRect(x: xValue, y: yValue, width: newWidth, height: newHeight)
+        print("portrait bounds: \(bounds) from size: \(size)")
+        return bounds
+    }
+    
+    func addGridView() {
+        guard let size = photoView.image?.size else { return }
+        gridView = PhotoGrid()
+        if let gridView = gridView {
+            let isPortrait = photoView.transform == portraitRotation
+            let bounds = isPortrait ? portraitBounds(for: size) : landscapeBounds(for: size)
+            gridView.frame = bounds
+            print("gridview frame: \(gridView.frame)")
+            print("gridview bounds: \(gridView.bounds)")
+            gridView.backgroundColor = UIColor.clear
+            gridView.alpha = 0.3
+            photoView.addSubview(gridView)
+        }
+    }
+    
+    func setPortraitRotation() {
+        guard let size = photoView.image?.size else { return }
+        let newBounds = portraitBounds(for: size)
         photoView.bounds = newBounds
-        gridView?.bounds = boundsForGridView(using: size)
         photoView.transform = portraitRotation
+        gridView?.bounds = newBounds
+        if let gridView = gridView {
+        print("portrait gridview bounds: \(gridView.bounds)")
+        print("portrait gridview frame: \(gridView.frame)")
+        }
         buttons.forEach { $0.transform = portraitRotation }
     }
     
@@ -199,7 +215,11 @@ class ViewController: UIViewController, UINavigationControllerDelegate, UIImageP
         guard let size = photoView.image?.size else { return }
         photoView.bounds = photoParentView.bounds
         photoView.transform = landscapeRotation
-        gridView?.frame = boundsForGridView(using: size)
+        gridView?.frame = landscapeBounds(for: size)
+        if let gridView = gridView {
+        print("landscape gridview bounds: \(gridView.bounds)")
+        print("landscape gridview frame: \(gridView.frame)")
+        }
     }
     
     @IBAction func rotateTapped(_ sender: UIButton) {
@@ -214,10 +234,11 @@ class ViewController: UIViewController, UINavigationControllerDelegate, UIImageP
         dismiss(animated: true) { [weak self] in
             guard let strongSelf = self else { return }
             strongSelf.clearGrid()
-            let image = info[UIImagePickerController.InfoKey.originalImage]
-            print(strongSelf.photoParentView.bounds)
-            strongSelf.photoView.frame = strongSelf.photoParentView.bounds
-            strongSelf.photoView.image = image as? UIImage
+            guard let image = info[UIImagePickerController.InfoKey.originalImage] as? UIImage else { return }
+            let isPortrait = strongSelf.photoView.transform == strongSelf.portraitRotation
+            let bounds = isPortrait ? strongSelf.portraitBounds(for: image.size) : strongSelf.photoParentView.bounds
+            strongSelf.photoView.bounds = bounds
+            strongSelf.photoView.image = image
             strongSelf.setVisibilityForLockAndGridButtons()
         }
     }
