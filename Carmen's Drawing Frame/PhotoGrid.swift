@@ -1,0 +1,195 @@
+//
+//  CustomGridView.swift
+//  Carmen's Drawing Frame
+//
+//  Created by Abbey Jackson on 2019-03-28.
+//  Copyright © 2019 Abbey Jackson. All rights reserved.
+//
+
+import UIKit
+
+@IBDesignable class PhotoGrid: UIView {
+    
+    //MARK: Properties
+    var drawableWidth: CGFloat {
+        return frame.size.width
+    }
+    var drawableHeight: CGFloat {
+        return frame.size.height
+    }
+    var numberOfColumns: Int = 0
+    var numberOfRows: Int = 0
+    var columnWidth: Int = 0
+    var rowHeight: Int = 0
+    
+    var lineWidth: CGFloat = 3.5
+    var lineColor: GridColor = .white
+    var gridType: GridType = .squares
+    
+    private var smallestSide: CGFloat {
+        return min(drawableWidth, drawableHeight)
+    }
+    
+    private var aspectRatio: CGFloat {
+        return CGFloat(columnWidth / rowHeight)
+    }
+    
+    //MARK: Drawing
+    override func draw(_ rect: CGRect) {
+        
+        switch gridType {
+        case .squares:
+            columnWidth = Int(smallestSide / 4)
+            rowHeight = Int(smallestSide / 4)
+            numberOfColumns = Int(drawableWidth) / columnWidth
+            numberOfRows = Int(drawableHeight) / rowHeight
+        case .triangles:
+            numberOfColumns = 3
+            numberOfRows = 3
+            columnWidth = Int(drawableWidth) / (numberOfColumns + 1)
+            rowHeight = Int(drawableHeight) / (numberOfRows + 1)
+        case .smallTriangles:
+            numberOfColumns = 6
+            numberOfRows = 6
+            columnWidth = Int(drawableWidth) / (numberOfColumns + 1)
+            rowHeight = Int(drawableHeight) / (numberOfRows + 1)
+        case .none:
+            numberOfColumns = 0
+            numberOfRows = 0
+        }
+        
+        drawLines()
+    }
+    
+    private func drawLines() {
+        guard numberOfRows > 0 && numberOfColumns > 0 else { return }
+        
+        guard let context = UIGraphicsGetCurrentContext() else {
+            return }
+        
+        context.setLineWidth(lineWidth)
+        context.setStrokeColor(lineColor.color)
+        
+        drawVerticalLines(on: context)
+        drawHorizontalLines(on: context)
+        
+        if gridType == .triangles || gridType == .smallTriangles {
+            drawDownwardLines(on: context)
+            drawUpwardLines(on: context)
+        }
+    }
+    
+    //MARK: Line Calculations
+    func drawVerticalLines(on context: CGContext) {
+        for i in 0...numberOfColumns + 1 {
+            var startPoint = CGPoint.zero
+            var endPoint = CGPoint.zero
+            startPoint.x = CGFloat(columnWidth * i) + (lineWidth / 2)
+            startPoint.y = 0.0
+            endPoint.x = startPoint.x
+            endPoint.y = drawableHeight
+            context.move(to: CGPoint(x: startPoint.x, y: startPoint.y))
+            context.addLine(to: CGPoint(x: endPoint.x, y: endPoint.y))
+            context.strokePath()
+        }
+    }
+    
+    func drawHorizontalLines(on context: CGContext) {
+        for j in 0...numberOfRows + 1 {
+            var startPoint = CGPoint.zero
+            var endPoint = CGPoint.zero
+            startPoint.x = 0.0
+            startPoint.y = CGFloat(rowHeight * j) + (lineWidth / 2)
+            endPoint.x = drawableWidth
+            endPoint.y = startPoint.y
+            context.move(to: CGPoint(x: startPoint.x, y: startPoint.y))
+            context.addLine(to: CGPoint(x: endPoint.x, y: endPoint.y))
+            context.strokePath()
+        }
+    }
+    
+    func drawDownwardLines(on context: CGContext) {
+        for i in 0...numberOfColumns + 1 {
+            var leftStartPoint = CGPoint.zero
+            var leftEndPoint = CGPoint.zero
+            leftStartPoint.x = CGFloat(columnWidth * i) + (lineWidth / 2)
+            leftStartPoint.y = 0.0
+            leftEndPoint.x = drawableWidth
+            leftEndPoint.y = drawableHeight - CGFloat(rowHeight * i)
+            context.move(to: CGPoint(x: leftStartPoint.x, y: leftStartPoint.y))
+            context.addLine(to: CGPoint(x: leftEndPoint.x, y: leftEndPoint.y))
+            
+            var rightStartPoint = CGPoint.zero
+            var rightEndPoint = CGPoint.zero
+            rightStartPoint.x = drawableWidth - CGFloat(columnWidth * i)
+            rightStartPoint.y = 0.0
+            rightEndPoint.x = 0.0
+            rightEndPoint.y = drawableHeight - CGFloat((rowHeight * i))
+            context.move(to: CGPoint(x: rightStartPoint.x, y: rightStartPoint.y))
+            context.addLine(to: CGPoint(x: rightEndPoint.x, y: rightEndPoint.y))
+            
+            context.strokePath()
+        }
+    }
+    
+    func drawUpwardLines(on context: CGContext) {
+        for j in 1...numberOfRows + 1 {
+            var leftStartPoint = CGPoint.zero
+            var leftEndPoint = CGPoint.zero
+            leftStartPoint.x = 0.0
+            leftStartPoint.y = CGFloat(rowHeight * j) + (lineWidth / 2)
+            leftEndPoint.x = drawableWidth - CGFloat(columnWidth * j)
+            leftEndPoint.y = drawableHeight
+            context.move(to: CGPoint(x: leftStartPoint.x, y: leftStartPoint.y))
+            context.addLine(to: CGPoint(x: leftEndPoint.x, y: leftEndPoint.y))
+            
+            var rightStartPoint = CGPoint.zero
+            var rightEndPoint = CGPoint.zero
+            rightStartPoint.x = drawableWidth
+            rightStartPoint.y = CGFloat(rowHeight * j)
+            rightEndPoint.x = CGFloat(columnWidth * j)
+            rightEndPoint.y = drawableHeight
+            context.move(to: CGPoint(x: rightStartPoint.x, y: rightStartPoint.y))
+            context.addLine(to: CGPoint(x: rightEndPoint.x, y: rightEndPoint.y))
+            
+            context.strokePath()
+        }
+    }
+}
+
+private typealias Enums = PhotoGrid
+extension Enums {
+    enum GridColor: Int {
+        case white, black, red, blue
+        
+        var color: CGColor {
+            switch self {
+            case .white: return UIColor.white.cgColor
+            case .black: return UIColor.black.cgColor
+            case .red: return UIColor.red.cgColor
+            case .blue: return UIColor.blue.cgColor
+            }
+        }
+    }
+    
+    enum GridType: Int {
+        case squares, triangles, smallTriangles, none
+    }
+}
+
+private typealias PublicAPI = PhotoGrid
+extension PublicAPI {
+    func swapLineColour() {
+        lineColor = GridColor(rawValue: lineColor.rawValue + 1) ?? .white
+        setNeedsDisplay()
+        setNeedsLayout()
+        layoutIfNeeded()
+    }
+    
+    func swapGrid() {
+        gridType = GridType(rawValue: gridType.rawValue + 1) ?? .squares
+        setNeedsDisplay()
+        setNeedsLayout()
+        layoutIfNeeded()
+    }
+}
