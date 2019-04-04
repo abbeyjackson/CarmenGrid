@@ -233,12 +233,7 @@ class ViewController: UIViewController, UINavigationControllerDelegate, UIImageP
         gridView = nil
     }
     
-//    func viewForZooming(in scrollView: UIScrollView) -> UIView? {
-//        return photoView
-//    }
-    
-//    func scrollViewDidEndZooming(_ scrollView: UIScrollView, with view: UIView?, atScale scale: CGFloat) {
-//        let currentTranform = photoView.transform
-//        photoView.transform = CGAffineTransform(scaleX: scale, y: <#T##CGFloat#>)
-//    }
+    func viewForZooming(in scrollView: UIScrollView) -> UIView? {
+        return photoView
+    }
 }
