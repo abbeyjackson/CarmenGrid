@@ -234,7 +234,7 @@ class ViewController: UIViewController, UINavigationControllerDelegate, UIImageP
         gridView = nil
     }
     
-    func viewForZoomingInScrollView(scrollView: UIScrollView) -> UIView? {
+    func viewForZooming(in scrollView: UIScrollView) -> UIView? {
         return photoView
     }
 }
