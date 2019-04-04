@@ -161,7 +161,6 @@ class ViewController: UIViewController, UINavigationControllerDelegate, UIImageP
     }
     
     func scaleToPortrait(_ size: CGSize) -> CGRect {
-        print("parent: \(photoParentView.frame) bounds: \(photoParentView.bounds)")
         let scale = size.height / size.width
         var newWidth = photoParentView.bounds.height
         var newHeight = newWidth * scale
@@ -169,7 +168,6 @@ class ViewController: UIViewController, UINavigationControllerDelegate, UIImageP
             newHeight = photoParentView.bounds.width
             newWidth = newHeight / scale
         }
-        print("newWidth: \(newWidth) newHeight: \(newHeight)")
         
         let xValue = (photoParentView.bounds.width - newWidth) / 2
         let yValue = (photoParentView.bounds.height - newHeight) / 2
@@ -182,34 +180,30 @@ class ViewController: UIViewController, UINavigationControllerDelegate, UIImageP
         guard let size = photoView.image?.size else { return }
         gridView = PhotoGrid()
         if let gridView = gridView {
-            let isPortrait = photoView.transform == portraitRotation
+            let isPortrait = photoParentView.transform == portraitRotation
             let newSize = isPortrait ? scaleToPortrait(size) : scaleToLandscape(size)
             gridView.backgroundColor = UIColor.clear
             gridView.alpha = 0.3
-            photoParentView.addSubview(gridView)
             gridView.frame = newSize
+            photoView.addSubview(gridView)
         }
     }
     
     func setPortraitRotation() {
         guard let size = photoView.image?.size else { return }
-        let newSize = scaleToPortrait(size)
         photoParentView.transform = portraitRotation
-        print("portrait: \(newSize)")
-        print("parent rotated: \(photoParentView.frame)")
+        let newSize = scaleToPortrait(size)
         photoView.bounds = newSize
-        gridView?.bounds = newSize
+        gridView?.frame = newSize
         buttons.forEach { $0.transform = portraitRotation }
     }
     
     func setLandscapeRotation() {
         buttons.forEach { $0.transform = landscapeRotation }
-        
         guard let size = photoView.image?.size else { return }
-        let newSize = scaleToLandscape(size)
-        print("landscape: \(newSize)")
-        photoView.bounds = photoParentView.bounds
         photoParentView.transform = landscapeRotation
+        let newSize = scaleToLandscape(size)
+        photoView.bounds = photoParentView.bounds
         gridView?.frame = newSize
     }
     
@@ -228,8 +222,6 @@ class ViewController: UIViewController, UINavigationControllerDelegate, UIImageP
             guard let image = info[UIImagePickerController.InfoKey.originalImage] as? UIImage else { return }
             let isPortrait = strongSelf.photoParentView.transform == strongSelf.portraitRotation
             let newSize = isPortrait ? strongSelf.scaleToPortrait(image.size) : strongSelf.photoParentView.bounds
-            print("parent at image picked: \(strongSelf.photoParentView.frame) bounds: \(strongSelf.photoParentView.bounds)")
-            print("image picked: \(newSize)")
             strongSelf.photoView.image = image
             strongSelf.photoView.bounds = newSize
             strongSelf.setVisibilityForLockAndGridButtons()
