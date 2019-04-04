@@ -7,7 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		532D3C87224DCDB50066582C /* PhotoGrid.swift in Sources */ = {isa = PBXBuildFile; fileRef = 532D3C86224DCDB50066582C /* PhotoGrid.swift */; };
+		532D3C87224DCDB50066582C /* PhotoGridView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 532D3C86224DCDB50066582C /* PhotoGridView.swift */; };
 		532D3C89224E77E70066582C /* TransparentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 532D3C88224E77E70066582C /* TransparentView.swift */; };
 		53DD3276224AE46500676BBE /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 53DD3275224AE46500676BBE /* AppDelegate.swift */; };
 		53DD3278224AE46500676BBE /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 53DD3277224AE46500676BBE /* ViewController.swift */; };
@@ -17,7 +17,7 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
-		532D3C86224DCDB50066582C /* PhotoGrid.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PhotoGrid.swift; sourceTree = "<group>"; };
+		532D3C86224DCDB50066582C /* PhotoGridView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PhotoGridView.swift; sourceTree = "<group>"; };
 		532D3C88224E77E70066582C /* TransparentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TransparentView.swift; sourceTree = "<group>"; };
 		53DD3272224AE46500676BBE /* Carmen's Drawing Frame.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Carmen's Drawing Frame.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		53DD3275224AE46500676BBE /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
@@ -64,7 +64,7 @@
 				53DD327C224AE46B00676BBE /* Assets.xcassets */,
 				53DD327E224AE46B00676BBE /* LaunchScreen.storyboard */,
 				53DD3281224AE46C00676BBE /* Info.plist */,
-				532D3C86224DCDB50066582C /* PhotoGrid.swift */,
+				532D3C86224DCDB50066582C /* PhotoGridView.swift */,
 				532D3C88224E77E70066582C /* TransparentView.swift */,
 			);
 			path = "Carmen's Drawing Frame";
@@ -141,7 +141,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				532D3C87224DCDB50066582C /* PhotoGrid.swift in Sources */,
+				532D3C87224DCDB50066582C /* PhotoGridView.swift in Sources */,
 				532D3C89224E77E70066582C /* TransparentView.swift in Sources */,
 				53DD3278224AE46500676BBE /* ViewController.swift in Sources */,
 				53DD3276224AE46500676BBE /* AppDelegate.swift in Sources */,

@@ -36,7 +36,11 @@ import UIKit
     
     //MARK: Drawing
     override func draw(_ rect: CGRect) {
-        
+        setGuideLines()
+        drawLines()
+    }
+    
+    private func setGuideLines() {
         switch gridType {
         case .squares:
             columnWidth = Int(smallestSide / 4)
@@ -57,8 +61,6 @@ import UIKit
             numberOfColumns = 0
             numberOfRows = 0
         }
-        
-        drawLines()
     }
     
     private func drawLines() {
@@ -80,7 +82,7 @@ import UIKit
     }
     
     //MARK: Line Calculations
-    func drawVerticalLines(on context: CGContext) {
+    private func drawVerticalLines(on context: CGContext) {
         for i in 0...numberOfColumns + 1 {
             var startPoint = CGPoint.zero
             var endPoint = CGPoint.zero
@@ -94,7 +96,7 @@ import UIKit
         }
     }
     
-    func drawHorizontalLines(on context: CGContext) {
+    private func drawHorizontalLines(on context: CGContext) {
         for j in 0...numberOfRows + 1 {
             var startPoint = CGPoint.zero
             var endPoint = CGPoint.zero
@@ -108,7 +110,7 @@ import UIKit
         }
     }
     
-    func drawDownwardLines(on context: CGContext) {
+    private func drawDownwardLines(on context: CGContext) {
         for i in 0...numberOfColumns + 1 {
             var leftStartPoint = CGPoint.zero
             var leftEndPoint = CGPoint.zero
@@ -132,7 +134,7 @@ import UIKit
         }
     }
     
-    func drawUpwardLines(on context: CGContext) {
+    private func drawUpwardLines(on context: CGContext) {
         for j in 1...numberOfRows + 1 {
             var leftStartPoint = CGPoint.zero
             var leftEndPoint = CGPoint.zero

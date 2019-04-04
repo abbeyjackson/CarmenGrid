@@ -11,8 +11,9 @@ import Photos
 
 class ViewController: UIViewController, UINavigationControllerDelegate, UIImagePickerControllerDelegate, UIScrollViewDelegate {
     
-    @IBOutlet weak var photoParentView: TransparentView!
+    @IBOutlet weak var scrollParentView: TransparentView!
     @IBOutlet weak var photoScrollView: UIScrollView!
+    @IBOutlet weak var photoParentView: UIView!
     @IBOutlet weak var photoView: UIImageView!
     
     @IBOutlet weak var lockedLabel: UILabel!
@@ -40,7 +41,7 @@ class ViewController: UIViewController, UINavigationControllerDelegate, UIImageP
         photoScrollView.minimumZoomScale = 1
         photoScrollView.maximumZoomScale = 10
         
-        photoView.transform = landscapeRotation
+        photoParentView.transform = landscapeRotation
         
         setUpButtons()
         
@@ -85,12 +86,12 @@ class ViewController: UIViewController, UINavigationControllerDelegate, UIImageP
     }
     
     func setVisibilityForLockAndGridButtons() {
-        let photoLoaded = (photoView.image != nil)
-        let mainAlpha = photoLoaded ? 1.0 : 0.0
+        let isPhotoLoaded = (photoView.image != nil)
+        let mainAlpha = isPhotoLoaded ? 1.0 : 0.0
         lockButton.alpha = CGFloat(mainAlpha)
-        lockButton.isUserInteractionEnabled = photoLoaded
+        lockButton.isUserInteractionEnabled = isPhotoLoaded
         gridButton.alpha = CGFloat(mainAlpha)
-        gridButton.isUserInteractionEnabled = photoLoaded
+        gridButton.isUserInteractionEnabled = isPhotoLoaded
         setVisibilityForPaletteButton()
     }
     
@@ -134,8 +135,8 @@ class ViewController: UIViewController, UINavigationControllerDelegate, UIImageP
     func contentScaleOfPhoto(size: CGSize) -> CGFloat {
         let width = size.width
         let height = size.height
-        let widthScale = photoView.frame.size.width / width
-        let heightScale = photoView.frame.size.height / height
+        let widthScale = photoParentView.bounds.size.width / width
+        let heightScale = photoParentView.bounds.size.height / height
         return min(widthScale, heightScale)
     }
     
@@ -152,26 +153,26 @@ class ViewController: UIViewController, UINavigationControllerDelegate, UIImageP
     func scaleToLandscape(_ size: CGSize) -> CGRect {
         let scaledWidth = scaledWidthOfPhoto(size: size)
         let scaledHeight = scaledHeightOfPhoto(size: size)
-        
-        let xValue = (photoView.frame.width - scaledWidth) / 2
-        let yValue = (photoView.frame.height - scaledHeight) / 2
+        let xValue = (photoParentView.frame.width - scaledWidth) / 2
+        let yValue = (photoParentView.frame.height - scaledHeight) / 2
         
         let scaledSize = CGRect(x: xValue, y: yValue, width: scaledWidth, height: scaledHeight)
         return scaledSize
     }
     
     func scaleToPortrait(_ size: CGSize) -> CGRect {
-        
+        print("parent: \(photoParentView.frame) bounds: \(photoParentView.bounds)")
         let scale = size.height / size.width
-        var newWidth = photoParentView.frame.height
+        var newWidth = photoParentView.bounds.height
         var newHeight = newWidth * scale
         if scale >= 1.0 { // Portrait oriented photo
-            newHeight = photoParentView.frame.width
+            newHeight = photoParentView.bounds.width
             newWidth = newHeight / scale
         }
+        print("newWidth: \(newWidth) newHeight: \(newHeight)")
         
-        let xValue = (photoParentView.frame.width - newWidth) / 2
-        let yValue = (photoParentView.frame.height - newHeight) / 2
+        let xValue = (photoParentView.bounds.width - newWidth) / 2
+        let yValue = (photoParentView.bounds.height - newHeight) / 2
         
         let scaledSize = CGRect(x: xValue, y: yValue, width: newWidth, height: newHeight)
         return scaledSize
@@ -183,18 +184,20 @@ class ViewController: UIViewController, UINavigationControllerDelegate, UIImageP
         if let gridView = gridView {
             let isPortrait = photoView.transform == portraitRotation
             let newSize = isPortrait ? scaleToPortrait(size) : scaleToLandscape(size)
-            gridView.frame = newSize
             gridView.backgroundColor = UIColor.clear
             gridView.alpha = 0.3
-            photoView.addSubview(gridView)
+            photoParentView.addSubview(gridView)
+            gridView.frame = newSize
         }
     }
     
     func setPortraitRotation() {
         guard let size = photoView.image?.size else { return }
         let newSize = scaleToPortrait(size)
+        photoParentView.transform = portraitRotation
+        print("portrait: \(newSize)")
+        print("parent rotated: \(photoParentView.frame)")
         photoView.bounds = newSize
-        photoView.transform = portraitRotation
         gridView?.bounds = newSize
         buttons.forEach { $0.transform = portraitRotation }
     }
@@ -203,13 +206,15 @@ class ViewController: UIViewController, UINavigationControllerDelegate, UIImageP
         buttons.forEach { $0.transform = landscapeRotation }
         
         guard let size = photoView.image?.size else { return }
+        let newSize = scaleToLandscape(size)
+        print("landscape: \(newSize)")
         photoView.bounds = photoParentView.bounds
-        photoView.transform = landscapeRotation
-        gridView?.frame = scaleToLandscape(size)
+        photoParentView.transform = landscapeRotation
+        gridView?.frame = newSize
     }
     
     @IBAction func rotateTapped(_ sender: UIButton) {
-        if photoView.transform == landscapeRotation {
+        if photoParentView.transform == landscapeRotation {
             setPortraitRotation()
         } else {
             setLandscapeRotation()
@@ -221,10 +226,12 @@ class ViewController: UIViewController, UINavigationControllerDelegate, UIImageP
             guard let strongSelf = self else { return }
             strongSelf.clearGrid()
             guard let image = info[UIImagePickerController.InfoKey.originalImage] as? UIImage else { return }
-            let isPortrait = strongSelf.photoView.transform == strongSelf.portraitRotation
+            let isPortrait = strongSelf.photoParentView.transform == strongSelf.portraitRotation
             let newSize = isPortrait ? strongSelf.scaleToPortrait(image.size) : strongSelf.photoParentView.bounds
-            strongSelf.photoView.bounds = newSize
+            print("parent at image picked: \(strongSelf.photoParentView.frame) bounds: \(strongSelf.photoParentView.bounds)")
+            print("image picked: \(newSize)")
             strongSelf.photoView.image = image
+            strongSelf.photoView.bounds = newSize
             strongSelf.setVisibilityForLockAndGridButtons()
         }
     }
@@ -234,7 +241,12 @@ class ViewController: UIViewController, UINavigationControllerDelegate, UIImageP
         gridView = nil
     }
     
-    func viewForZooming(in scrollView: UIScrollView) -> UIView? {
-        return photoView
-    }
+//    func viewForZooming(in scrollView: UIScrollView) -> UIView? {
+//        return photoView
+//    }
+    
+//    func scrollViewDidEndZooming(_ scrollView: UIScrollView, with view: UIView?, atScale scale: CGFloat) {
+//        let currentTranform = photoView.transform
+//        photoView.transform = CGAffineTransform(scaleX: scale, y: <#T##CGFloat#>)
+//    }
 }

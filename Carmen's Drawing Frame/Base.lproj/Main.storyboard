@@ -120,17 +120,29 @@
                                     <scrollView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="Rvj-st-aHr" userLabel="image scrollview">
                                         <rect key="frame" x="0.0" y="0.0" width="1040" height="814"/>
                                         <subviews>
-                                            <view userInteractionEnabled="NO" contentMode="scaleAspectFit" translatesAutoresizingMaskIntoConstraints="NO" id="AWI-bH-KAe" customClass="UIImageView">
+                                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="6BM-aT-GXd">
                                                 <rect key="frame" x="0.0" y="0.0" width="1040" height="814"/>
+                                                <subviews>
+                                                    <view userInteractionEnabled="NO" contentMode="scaleAspectFit" translatesAutoresizingMaskIntoConstraints="NO" id="AWI-bH-KAe" customClass="UIImageView">
+                                                        <rect key="frame" x="0.0" y="0.0" width="1040" height="814"/>
+                                                        <color key="backgroundColor" white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                                    </view>
+                                                </subviews>
                                                 <color key="backgroundColor" white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                                <constraints>
+                                                    <constraint firstItem="AWI-bH-KAe" firstAttribute="leading" secondItem="6BM-aT-GXd" secondAttribute="leading" id="7LT-tE-nRG"/>
+                                                    <constraint firstAttribute="trailing" secondItem="AWI-bH-KAe" secondAttribute="trailing" id="SZB-AV-2qp"/>
+                                                    <constraint firstItem="AWI-bH-KAe" firstAttribute="top" secondItem="6BM-aT-GXd" secondAttribute="top" id="UWD-eW-dnG"/>
+                                                    <constraint firstAttribute="bottom" secondItem="AWI-bH-KAe" secondAttribute="bottom" id="Xty-jr-EsB"/>
+                                                </constraints>
                                             </view>
                                         </subviews>
                                         <color key="backgroundColor" white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                         <constraints>
-                                            <constraint firstItem="AWI-bH-KAe" firstAttribute="top" secondItem="Rvj-st-aHr" secondAttribute="top" id="6eq-C2-oDG"/>
-                                            <constraint firstItem="AWI-bH-KAe" firstAttribute="leading" secondItem="Rvj-st-aHr" secondAttribute="leading" id="Im1-rB-JUF"/>
-                                            <constraint firstAttribute="bottom" secondItem="AWI-bH-KAe" secondAttribute="bottom" id="QeM-E8-Cgu"/>
-                                            <constraint firstAttribute="trailing" secondItem="AWI-bH-KAe" secondAttribute="trailing" id="Skc-d1-1GL"/>
+                                            <constraint firstItem="6BM-aT-GXd" firstAttribute="top" secondItem="Rvj-st-aHr" secondAttribute="top" id="7gD-VF-vCG"/>
+                                            <constraint firstItem="6BM-aT-GXd" firstAttribute="leading" secondItem="Rvj-st-aHr" secondAttribute="leading" id="ph8-DE-RDq"/>
+                                            <constraint firstAttribute="bottom" secondItem="6BM-aT-GXd" secondAttribute="bottom" id="wmZ-dR-qpr"/>
+                                            <constraint firstAttribute="trailing" secondItem="6BM-aT-GXd" secondAttribute="trailing" id="zff-jV-0tO"/>
                                         </constraints>
                                         <connections>
                                             <outlet property="delegate" destination="BYZ-38-t0r" id="B7g-TQ-e8B"/>
@@ -139,10 +151,10 @@
                                 </subviews>
                                 <color key="backgroundColor" white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                 <constraints>
-                                    <constraint firstItem="AWI-bH-KAe" firstAttribute="width" secondItem="NdZ-ep-bCQ" secondAttribute="width" id="0Kk-Uq-gF8"/>
                                     <constraint firstAttribute="trailing" secondItem="Rvj-st-aHr" secondAttribute="trailing" id="Kb7-o3-fna"/>
                                     <constraint firstAttribute="bottom" secondItem="Rvj-st-aHr" secondAttribute="bottom" id="P0j-tp-rFY"/>
-                                    <constraint firstItem="AWI-bH-KAe" firstAttribute="height" secondItem="NdZ-ep-bCQ" secondAttribute="height" id="cVY-Uv-Kqo"/>
+                                    <constraint firstItem="6BM-aT-GXd" firstAttribute="width" secondItem="NdZ-ep-bCQ" secondAttribute="width" id="a3U-Or-exp"/>
+                                    <constraint firstItem="6BM-aT-GXd" firstAttribute="height" secondItem="NdZ-ep-bCQ" secondAttribute="height" id="cJo-Ws-fEr"/>
                                     <constraint firstItem="Rvj-st-aHr" firstAttribute="top" secondItem="NdZ-ep-bCQ" secondAttribute="top" id="dPq-hp-rjK"/>
                                     <constraint firstItem="Rvj-st-aHr" firstAttribute="leading" secondItem="NdZ-ep-bCQ" secondAttribute="leading" id="wVf-m1-bL0"/>
                                 </constraints>
@@ -177,10 +189,11 @@
                         <outlet property="lockedLabel" destination="N4b-pZ-CYa" id="Bge-cx-fjN"/>
                         <outlet property="paletteButton" destination="z7r-vg-Dak" id="K1x-KH-rCs"/>
                         <outlet property="photoButton" destination="lur-id-0s9" id="OWY-QZ-egt"/>
-                        <outlet property="photoParentView" destination="NdZ-ep-bCQ" id="Yxl-Uj-Rko"/>
+                        <outlet property="photoParentView" destination="6BM-aT-GXd" id="1wC-Z6-V9h"/>
                         <outlet property="photoScrollView" destination="Rvj-st-aHr" id="YEd-77-WlG"/>
                         <outlet property="photoView" destination="AWI-bH-KAe" id="t5T-eJ-XTH"/>
                         <outlet property="rotateButton" destination="cxQ-nP-Av9" id="fRR-Xg-MEP"/>
+                        <outlet property="scrollParentView" destination="NdZ-ep-bCQ" id="IkT-fM-iCx"/>
                         <outletCollection property="buttons" destination="PZU-zh-0CF" collectionClass="NSMutableArray" id="hnM-pj-yE9"/>
                         <outletCollection property="buttons" destination="lur-id-0s9" collectionClass="NSMutableArray" id="VPE-lk-3ET"/>
                         <outletCollection property="buttons" destination="z7r-vg-Dak" collectionClass="NSMutableArray" id="Aq2-Lk-HIf"/>
