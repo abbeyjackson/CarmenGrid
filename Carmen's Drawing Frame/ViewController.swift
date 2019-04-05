@@ -39,16 +39,18 @@ class ViewController: UIViewController, UINavigationControllerDelegate, UIImageP
         photoScrollView.delegate = self
         
         photoScrollView.minimumZoomScale = 1
-        photoScrollView.maximumZoomScale = 10
+        photoScrollView.maximumZoomScale = 4
         
         photoParentView.transform = landscapeRotation
         
         setUpButtons()
         
-        lockedLabel.text = "View\nis\nLocked\nDouble\ntap\nto\nunlock"
+        lockedLabel.text = "View is Locked\nDouble tap to unlock"
         let unlockGesture = UITapGestureRecognizer(target: self, action: #selector(lockTapped(_:)))
         unlockGesture.numberOfTapsRequired = 2
         lockedLabel.addGestureRecognizer(unlockGesture)
+        lockedLabel.isHidden = true
+        lockedLabel.transform = portraitRotation
     }
     
     func setUpButtons() {
@@ -113,9 +115,11 @@ class ViewController: UIViewController, UINavigationControllerDelegate, UIImageP
     
     @IBAction func lockTapped(_ sender: UIButton) {
        let showButtons = buttonsView.isHidden
+        lockedLabel.isHidden = showButtons
         buttonsView.isUserInteractionEnabled = showButtons
         buttonsView.isHidden = !showButtons
         lockedLabel.isUserInteractionEnabled = !showButtons
+        photoScrollView.isUserInteractionEnabled = showButtons
     }
     
     @IBAction func paletteTapped(_ sender: UIButton) {
