@@ -42,7 +42,10 @@ class ViewController: UIViewController {
         setUpButtons()
         setUpLockLabel()
     }
-    
+}
+
+typealias PhotoSetUp = ViewController
+extension PhotoSetUp {
     func loadSavedPhotos(locatedIn directory: URL) {
         var loadedPhotos: [(photo: UIImage, name: String)] = []
         
@@ -58,6 +61,23 @@ class ViewController: UIViewController {
         
         photos = loadedPhotos
         replaceSavedPhotos(locatedIn: defaultDirectory, with: loadedPhotos)
+    }
+    
+    func replaceSavedPhotos(locatedIn directory: URL, with newPhotos: [(photo: UIImage, name: String)]) {
+        for suffix in 0..<3 {
+            let filename = "photo\(suffix)"
+            let fullPath = directory.appendingPathComponent(filename)
+            
+            do {
+                try FileManager.default.removeItem(at: fullPath)
+                let photo = newPhotos.filter { $0.name == filename }.first
+                if let image = photo?.photo {
+                    save(image, to: fullPath)
+                }
+            } catch {
+                print("Couldn't delete \(filename)")
+            }
+        }
     }
 }
 
@@ -108,6 +128,7 @@ extension ViewSetUp {
 typealias Visibility = ViewController
 extension Visibility {
     func setVisibilityForLockAndGridButtons() {
+        swapButton.isEnabled = photos.count > 1
         let isPhotoLoaded = (photoView.image != nil)
         let mainAlpha = isPhotoLoaded ? 1.0 : 0.0
         lockButton.alpha = CGFloat(mainAlpha)
@@ -123,6 +144,14 @@ extension Visibility {
         paletteButton.alpha = CGFloat(paletteAlpha)
         paletteButton.isUserInteractionEnabled = gridVisible
     }
+    
+    func showNew(_ photo: UIImage) {
+        clearGrid()
+        let isPortrait = photoParentView.transform == DisplayRotation.portrait.transform
+        let newSize = isPortrait ? scaleToPortrait(photo.size) : photoParentView.bounds
+        photoView.image = photo
+        photoView.bounds = newSize
+    }
 }
 
 typealias ButtonActions = ViewController
@@ -137,7 +166,19 @@ extension ButtonActions {
     }
     
     @IBAction func swapTapped(_ sender: UIButton) {
+        let indexOfCurrent = photos.firstIndex { photo -> Bool in
+            let (image, _) = photo
+            return image == photoView.image
+        }
         
+        guard let currentIndex = indexOfCurrent else { return }
+        let newIndex = currentIndex + 1
+        
+        if currentIndex == 2, let photo = photos.first?.photo {
+            showNew(photo)
+        } else if photos.indices.contains(newIndex) {
+            showNew(photos[newIndex].photo)
+        }
     }
     
     @IBAction func lockTapped(_ sender: UIButton) {
@@ -228,13 +269,9 @@ extension Delegates: UINavigationControllerDelegate, UIImagePickerControllerDele
     func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info:  [UIImagePickerController.InfoKey : Any]) {
         dismiss(animated: true) { [weak self] in
             guard let strongSelf = self else { return }
-            strongSelf.clearGrid()
             guard let photo = info[UIImagePickerController.InfoKey.originalImage] as? UIImage else { return }
+            strongSelf.showNew(photo)
             strongSelf.addNew(photo, to: strongSelf.defaultDirectory)
-            let isPortrait = strongSelf.photoParentView.transform == DisplayRotation.portrait.transform
-            let newSize = isPortrait ? strongSelf.scaleToPortrait(photo.size) : strongSelf.photoParentView.bounds
-            strongSelf.photoView.image = photo
-            strongSelf.photoView.bounds = newSize
             strongSelf.setVisibilityForLockAndGridButtons()
         }
     }
@@ -322,23 +359,6 @@ extension Persistance {
             try data.write(to: fullPath)
         } catch {
             print("Couldn't write \(fullPath.lastPathComponent)")
-        }
-    }
-    
-    func replaceSavedPhotos(locatedIn directory: URL, with newPhotos: [(photo: UIImage, name: String)]) {
-        for suffix in 0..<3 {
-            let filename = "photo\(suffix)"
-            let fullPath = directory.appendingPathComponent(filename)
-
-            do {
-                try FileManager.default.removeItem(at: fullPath)
-                let photo = newPhotos.filter { $0.name == filename }.first
-                if let image = photo?.photo {
-                    save(image, to: fullPath)
-                }
-            } catch {
-                print("Couldn't delete \(filename)")
-            }
         }
     }
 }
