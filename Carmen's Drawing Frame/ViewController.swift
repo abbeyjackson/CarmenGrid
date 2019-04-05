@@ -32,6 +32,7 @@ class ViewController: UIViewController {
     var photos: [(photo: UIImage, name: String)] = []
     
     let defaultDirectory = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask)[0]
+    let nameKey = "lastPhotoName"
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -51,16 +52,25 @@ extension PhotoSetUp {
         
         for suffix in 0..<3 {
             let filename = "photo\(suffix)"
+            print("Attempting to retrieve \(filename)")
             let fullpath = directory.appendingPathComponent(filename)
-            guard let data = try? Data(contentsOf: fullpath), let photo = UIImage(data: data) else {
+            if let data = try? Data(contentsOf: fullpath), let photo = UIImage(data: data) {
+                loadedPhotos.append((photo: photo, name: filename))
+            } else {
                 print("Couldn't retrieve \(filename)")
-                return
             }
-            loadedPhotos.append((photo: photo, name: "photo\(loadedPhotos.count)"))
         }
         
-        photos = loadedPhotos
-        replaceSavedPhotos(locatedIn: defaultDirectory, with: loadedPhotos)
+        guard !loadedPhotos.isEmpty else { return }
+        
+        photos = loadedPhotos.sorted { $0.name < $1.name }
+        let previousName = UserDefaults.standard.string(forKey: nameKey)
+        let photo = photos.filter { $0.name == previousName }.first
+        if let newPhoto = photo?.photo {
+            show(newPhoto)
+        } else if let photo = photos.first {
+            show(photo.photo)
+        }
     }
     
     func replaceSavedPhotos(locatedIn directory: URL, with newPhotos: [(photo: UIImage, name: String)]) {
@@ -112,7 +122,7 @@ extension ViewSetUp {
             button.contentEdgeInsets = UIEdgeInsets(top: verticalInsets, left: hotizontalInsets, bottom: verticalInsets, right: hotizontalInsets)
         }
         
-        setVisibilityForLockAndGridButtons()
+        setVisibilityForButtons()
     }
     
     func setUpLockLabel() {
@@ -127,14 +137,18 @@ extension ViewSetUp {
 
 typealias Visibility = ViewController
 extension Visibility {
-    func setVisibilityForLockAndGridButtons() {
+    func setVisibilityForButtons() {
         swapButton.isEnabled = photos.count > 1
+        
         let isPhotoLoaded = (photoView.image != nil)
         let mainAlpha = isPhotoLoaded ? 1.0 : 0.0
+        
         lockButton.alpha = CGFloat(mainAlpha)
         lockButton.isUserInteractionEnabled = isPhotoLoaded
+        
         gridButton.alpha = CGFloat(mainAlpha)
         gridButton.isUserInteractionEnabled = isPhotoLoaded
+        
         setVisibilityForPaletteButton()
     }
     
@@ -145,7 +159,7 @@ extension Visibility {
         paletteButton.isUserInteractionEnabled = gridVisible
     }
     
-    func showNew(_ photo: UIImage) {
+    func show(_ photo: UIImage) {
         clearGrid()
         let isPortrait = photoParentView.transform == DisplayRotation.portrait.transform
         let newSize = isPortrait ? scaleToPortrait(photo.size) : photoParentView.bounds
@@ -172,13 +186,16 @@ extension ButtonActions {
         }
         
         guard let currentIndex = indexOfCurrent else { return }
-        let newIndex = currentIndex + 1
+        var newIndex = currentIndex + 1
         
-        if currentIndex == 2, let photo = photos.first?.photo {
-            showNew(photo)
+        if newIndex == photos.count, let photo = photos.first?.photo {
+            newIndex = 0
+            show(photo)
         } else if photos.indices.contains(newIndex) {
-            showNew(photos[newIndex].photo)
+            show(photos[newIndex].photo)
         }
+        
+        UserDefaults.standard.set(newIndex, forKey: nameKey)
     }
     
     @IBAction func lockTapped(_ sender: UIButton) {
@@ -270,9 +287,9 @@ extension Delegates: UINavigationControllerDelegate, UIImagePickerControllerDele
         dismiss(animated: true) { [weak self] in
             guard let strongSelf = self else { return }
             guard let photo = info[UIImagePickerController.InfoKey.originalImage] as? UIImage else { return }
-            strongSelf.showNew(photo)
+            strongSelf.show(photo)
             strongSelf.addNew(photo, to: strongSelf.defaultDirectory)
-            strongSelf.setVisibilityForLockAndGridButtons()
+            strongSelf.setVisibilityForButtons()
         }
     }
 }
@@ -322,8 +339,9 @@ extension Rotation {
 typealias Persistance = ViewController
 extension Persistance {
     func removeLastPhoto(locatedIn directory: URL) {
-        photos.remove(at: 2)
-        let deletePath = directory.appendingPathComponent("photo2")
+        let previousIndex = photos.count - 1
+        photos.remove(at: previousIndex)
+        let deletePath = directory.appendingPathComponent("photo\(previousIndex)")
         do {
             try FileManager.default.removeItem(at: deletePath)
         } catch {
@@ -331,26 +349,29 @@ extension Persistance {
         }
     }
     
-    func shiftSavedPhotos(locatedIn directory: URL) {
-        for index in 0..<photos.count {
-            photos[index + 1] = photos[index]
-            let oldPath = directory.appendingPathComponent("photo\(index)")
-            let newPath = directory.appendingPathComponent("photo\(index + 1)")
-            do {
-                try FileManager.default.moveItem(at: oldPath, to: newPath)
-            } catch {
-                print("Couldn't move photo\(index)")
-            }
-        }
-    }
-    
     func addNew(_ photo: UIImage, to directory: URL) {
-        let fullPath = directory.appendingPathComponent("photo1")
+        let fileName = "photo0"
+        let fullPath = directory.appendingPathComponent(fileName)
         if photos.count == 3 {
             removeLastPhoto(locatedIn: directory)
         }
         shiftSavedPhotos(locatedIn: directory)
+        photos.insert((photo, fileName), at: 0)
         save(photo, to: fullPath)
+        setVisibilityForButtons()
+    }
+    
+    func shiftSavedPhotos(locatedIn directory: URL) {
+        for index in 0..<photos.count {
+            let oldPath = directory.appendingPathComponent("photo\(index)")
+            let filename = (index == photos.count - 1) ? "photo0" : "photo\(index + 1)"
+            let newPath = directory.appendingPathComponent(filename)
+            do {
+                try FileManager.default.moveItem(at: oldPath, to: newPath)
+            } catch {
+                print("Couldn't move saved \(filename)")
+            }
+        }
     }
     
     func save(_ photo: UIImage, to fullPath: URL) {
