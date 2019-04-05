@@ -9,7 +9,7 @@
 import UIKit
 import Photos
 
-class ViewController: UIViewController, UINavigationControllerDelegate, UIImagePickerControllerDelegate, UIScrollViewDelegate {
+class ViewController: UIViewController {
     
     @IBOutlet weak var scrollParentView: TransparentView!
     @IBOutlet weak var photoScrollView: UIScrollView!
@@ -19,6 +19,7 @@ class ViewController: UIViewController, UINavigationControllerDelegate, UIImageP
     @IBOutlet weak var lockedLabel: UILabel!
     @IBOutlet weak var buttonsView: UIView!
     @IBOutlet weak var photoButton: UIButton!
+    @IBOutlet weak var swapButton: UIButton!
     @IBOutlet weak var lockButton: UIButton!
     @IBOutlet weak var paletteButton: UIButton!
     @IBOutlet weak var gridButton: UIButton!
@@ -28,65 +29,84 @@ class ViewController: UIViewController, UINavigationControllerDelegate, UIImageP
     var gridView: PhotoGrid?
     var imagePickerController = UIImagePickerController()
     
-    let portraitRotation = CGAffineTransform(rotationAngle: CGFloat.pi / 2)
-    let landscapeRotation = CGAffineTransform(rotationAngle: 0)
+    var photos: [(photo: UIImage, name: String)] = []
+    
+    let defaultDirectory = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask)[0]
 
     override func viewDidLoad() {
         super.viewDidLoad()
         
+        loadSavedPhotos(locatedIn: defaultDirectory)
+        setUpImagePicker()
+        setUpPhotoViews()
+        setUpButtons()
+        setUpLockLabel()
+    }
+    
+    func loadSavedPhotos(locatedIn directory: URL) {
+        var loadedPhotos: [(photo: UIImage, name: String)] = []
+        
+        for suffix in 0..<3 {
+            let filename = "photo\(suffix)"
+            let fullpath = directory.appendingPathComponent(filename)
+            guard let data = try? Data(contentsOf: fullpath), let photo = UIImage(data: data) else {
+                print("Couldn't retrieve \(filename)")
+                return
+            }
+            loadedPhotos.append((photo: photo, name: "photo\(loadedPhotos.count)"))
+        }
+        
+        photos = loadedPhotos
+        replaceSavedPhotos(locatedIn: defaultDirectory, with: loadedPhotos)
+    }
+}
+
+typealias ViewSetUp = ViewController
+extension ViewSetUp {
+    func setUpImagePicker() {
         imagePickerController.modalPresentationStyle = UIModalPresentationStyle.currentContext
         imagePickerController.delegate = self as UINavigationControllerDelegate & UIImagePickerControllerDelegate
+    }
+    
+    func setUpPhotoViews() {
         photoScrollView.delegate = self
-        
         photoScrollView.minimumZoomScale = 1
         photoScrollView.maximumZoomScale = 4
+        photoParentView.transform = DisplayRotation.landscape.transform
+    }
+    
+    func setUpButtons() {
+        let imageInset = CGFloat(2)
+        let hotizontalInsets = CGFloat(0)
         
-        photoParentView.transform = landscapeRotation
+        for button in buttons {
+            guard let name = button.accessibilityLabel else { return }
+            let verticalInsets = CGFloat(button.bounds.height/4)
+            let image = UIImage(named: name)?.withRenderingMode(.alwaysTemplate)
+            button.setImage(image, for: .normal)
+            button.tintColor = UIColor.gray
+            button.imageEdgeInsets = UIEdgeInsets(top: imageInset,
+                                                  left: imageInset,
+                                                  bottom: imageInset,
+                                                  right: imageInset)
+            button.contentEdgeInsets = UIEdgeInsets(top: verticalInsets, left: hotizontalInsets, bottom: verticalInsets, right: hotizontalInsets)
+        }
         
-        setUpButtons()
-        
+        setVisibilityForLockAndGridButtons()
+    }
+    
+    func setUpLockLabel() {
         lockedLabel.text = "View is Locked\nDouble tap to unlock"
         let unlockGesture = UITapGestureRecognizer(target: self, action: #selector(lockTapped(_:)))
         unlockGesture.numberOfTapsRequired = 2
         lockedLabel.addGestureRecognizer(unlockGesture)
         lockedLabel.isHidden = true
-        lockedLabel.transform = portraitRotation
+        lockedLabel.transform = DisplayRotation.portrait.transform
     }
-    
-    func setUpButtons() {
-        let minPadding = CGFloat(4)
-        let buttonSize = photoButton.bounds.width - minPadding
-        let xInset = minPadding / 2
-        let yInset = (photoButton.bounds.height - buttonSize) / 2
-        
-        let photoImage = UIImage(named: "photo")?.withRenderingMode(.alwaysTemplate)
-        photoButton.setImage(photoImage, for: .normal)
-        photoButton.tintColor = UIColor.gray
-        photoButton.imageEdgeInsets = UIEdgeInsets(top: yInset, left: xInset, bottom: yInset, right: xInset)
-        
-        let lockImage = UIImage(named: "lock")?.withRenderingMode(.alwaysTemplate)
-        lockButton.setImage(lockImage, for: .normal)
-        lockButton.tintColor = UIColor.gray
-        lockButton.imageEdgeInsets = UIEdgeInsets(top: yInset, left: xInset, bottom: yInset, right: xInset)
-        
-        let paletteImage = UIImage(named: "palette")?.withRenderingMode(.alwaysTemplate)
-        paletteButton.setImage(paletteImage, for: .normal)
-        paletteButton.tintColor = UIColor.gray
-        paletteButton.imageEdgeInsets = UIEdgeInsets(top: yInset, left: xInset, bottom: yInset, right: xInset)
-        
-        let gridImage = UIImage(named: "grid")?.withRenderingMode(.alwaysTemplate)
-        gridButton.setImage(gridImage, for: .normal)
-        gridButton.tintColor = UIColor.gray
-        gridButton.imageEdgeInsets = UIEdgeInsets(top: yInset, left: xInset, bottom: yInset, right: xInset)
-        
-        let rotateImage = UIImage(named: "rotate")?.withRenderingMode(.alwaysTemplate)
-        rotateButton.setImage(rotateImage, for: .normal)
-        rotateButton.tintColor = UIColor.gray
-        rotateButton.imageEdgeInsets = UIEdgeInsets(top: yInset, left: xInset, bottom: yInset, right: xInset)
-        
-        setVisibilityForLockAndGridButtons()
-    }
-    
+}
+
+typealias Visibility = ViewController
+extension Visibility {
     func setVisibilityForLockAndGridButtons() {
         let isPhotoLoaded = (photoView.image != nil)
         let mainAlpha = isPhotoLoaded ? 1.0 : 0.0
@@ -103,7 +123,10 @@ class ViewController: UIViewController, UINavigationControllerDelegate, UIImageP
         paletteButton.alpha = CGFloat(paletteAlpha)
         paletteButton.isUserInteractionEnabled = gridVisible
     }
+}
 
+typealias ButtonActions = ViewController
+extension ButtonActions {
     @IBAction func photoTapped(_ sender: UIButton) {
         if UIImagePickerController.isSourceTypeAvailable(.photoLibrary) {
             self.present(imagePickerController, animated: true, completion: nil)
@@ -111,6 +134,10 @@ class ViewController: UIViewController, UINavigationControllerDelegate, UIImageP
             let alert = UIAlertController(title: "Error", message: "Your device can not display the photo library", preferredStyle: .alert)
             self.present(alert, animated: true, completion: nil)
         }
+    }
+    
+    @IBAction func swapTapped(_ sender: UIButton) {
+        
     }
     
     @IBAction func lockTapped(_ sender: UIButton) {
@@ -136,6 +163,17 @@ class ViewController: UIViewController, UINavigationControllerDelegate, UIImageP
         setVisibilityForPaletteButton()
     }
     
+    @IBAction func rotateTapped(_ sender: UIButton) {
+        if photoParentView.transform == DisplayRotation.landscape.transform {
+            setPortraitRotation()
+        } else {
+            setLandscapeRotation()
+        }
+    }
+}
+
+typealias Scaling = ViewController
+extension Scaling {
     func contentScaleOfPhoto(size: CGSize) -> CGFloat {
         let width = size.width
         let height = size.height
@@ -179,12 +217,36 @@ class ViewController: UIViewController, UINavigationControllerDelegate, UIImageP
         let scaledSize = CGRect(x: xValue, y: yValue, width: newWidth, height: newHeight)
         return scaledSize
     }
+}
+
+typealias Delegates = ViewController
+extension Delegates: UINavigationControllerDelegate, UIImagePickerControllerDelegate, UIScrollViewDelegate {
+    func viewForZooming(in scrollView: UIScrollView) -> UIView? {
+        return photoView
+    }
     
+    func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info:  [UIImagePickerController.InfoKey : Any]) {
+        dismiss(animated: true) { [weak self] in
+            guard let strongSelf = self else { return }
+            strongSelf.clearGrid()
+            guard let photo = info[UIImagePickerController.InfoKey.originalImage] as? UIImage else { return }
+            strongSelf.addNew(photo, to: strongSelf.defaultDirectory)
+            let isPortrait = strongSelf.photoParentView.transform == DisplayRotation.portrait.transform
+            let newSize = isPortrait ? strongSelf.scaleToPortrait(photo.size) : strongSelf.photoParentView.bounds
+            strongSelf.photoView.image = photo
+            strongSelf.photoView.bounds = newSize
+            strongSelf.setVisibilityForLockAndGridButtons()
+        }
+    }
+}
+
+typealias Grid = ViewController
+extension Grid {
     func addGridView() {
         guard let size = photoView.image?.size else { return }
         gridView = PhotoGrid()
         if let gridView = gridView {
-            let isPortrait = photoParentView.transform == portraitRotation
+            let isPortrait = photoParentView.transform == DisplayRotation.portrait.transform
             let newSize = isPortrait ? scaleToPortrait(size) : scaleToLandscape(size)
             gridView.backgroundColor = UIColor.clear
             gridView.alpha = 0.3
@@ -193,51 +255,90 @@ class ViewController: UIViewController, UINavigationControllerDelegate, UIImageP
         }
     }
     
-    func setPortraitRotation() {
-        guard let size = photoView.image?.size else { return }
-        photoParentView.transform = portraitRotation
-        let newSize = scaleToPortrait(size)
-        photoView.bounds = newSize
-        gridView?.frame = newSize
-        buttons.forEach { $0.transform = portraitRotation }
-    }
-    
-    func setLandscapeRotation() {
-        buttons.forEach { $0.transform = landscapeRotation }
-        guard let size = photoView.image?.size else { return }
-        photoParentView.transform = landscapeRotation
-        let newSize = scaleToLandscape(size)
-        photoView.bounds = photoParentView.bounds
-        gridView?.frame = newSize
-    }
-    
-    @IBAction func rotateTapped(_ sender: UIButton) {
-        if photoParentView.transform == landscapeRotation {
-            setPortraitRotation()
-        } else {
-            setLandscapeRotation()
-        }
-    }
-    
-    func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info:  [UIImagePickerController.InfoKey : Any]) {
-        dismiss(animated: true) { [weak self] in
-            guard let strongSelf = self else { return }
-            strongSelf.clearGrid()
-            guard let image = info[UIImagePickerController.InfoKey.originalImage] as? UIImage else { return }
-            let isPortrait = strongSelf.photoParentView.transform == strongSelf.portraitRotation
-            let newSize = isPortrait ? strongSelf.scaleToPortrait(image.size) : strongSelf.photoParentView.bounds
-            strongSelf.photoView.image = image
-            strongSelf.photoView.bounds = newSize
-            strongSelf.setVisibilityForLockAndGridButtons()
-        }
-    }
-    
     func clearGrid() {
         gridView?.removeFromSuperview()
         gridView = nil
     }
+}
+
+typealias Rotation = ViewController
+extension Rotation {
+    func setPortraitRotation() {
+        guard let size = photoView.image?.size else { return }
+        photoParentView.transform = DisplayRotation.portrait.transform
+        let newSize = scaleToPortrait(size)
+        photoView.bounds = newSize
+        gridView?.frame = newSize
+        buttons.forEach { $0.transform = DisplayRotation.portrait.transform }
+    }
     
-    func viewForZooming(in scrollView: UIScrollView) -> UIView? {
-        return photoView
+    func setLandscapeRotation() {
+        buttons.forEach { $0.transform = DisplayRotation.landscape.transform }
+        guard let size = photoView.image?.size else { return }
+        photoParentView.transform = DisplayRotation.landscape.transform
+        let newSize = scaleToLandscape(size)
+        photoView.bounds = photoParentView.bounds
+        gridView?.frame = newSize
+    }
+}
+
+typealias Persistance = ViewController
+extension Persistance {
+    func removeLastPhoto(locatedIn directory: URL) {
+        photos.remove(at: 2)
+        let deletePath = directory.appendingPathComponent("photo2")
+        do {
+            try FileManager.default.removeItem(at: deletePath)
+        } catch {
+            print("Couldn't delete photo2")
+        }
+    }
+    
+    func shiftSavedPhotos(locatedIn directory: URL) {
+        for index in 0..<photos.count {
+            photos[index + 1] = photos[index]
+            let oldPath = directory.appendingPathComponent("photo\(index)")
+            let newPath = directory.appendingPathComponent("photo\(index + 1)")
+            do {
+                try FileManager.default.moveItem(at: oldPath, to: newPath)
+            } catch {
+                print("Couldn't move photo\(index)")
+            }
+        }
+    }
+    
+    func addNew(_ photo: UIImage, to directory: URL) {
+        let fullPath = directory.appendingPathComponent("photo1")
+        if photos.count == 3 {
+            removeLastPhoto(locatedIn: directory)
+        }
+        shiftSavedPhotos(locatedIn: directory)
+        save(photo, to: fullPath)
+    }
+    
+    func save(_ photo: UIImage, to fullPath: URL) {
+        guard let data = photo.pngData() else { return }
+        do {
+            try data.write(to: fullPath)
+        } catch {
+            print("Couldn't write \(fullPath.lastPathComponent)")
+        }
+    }
+    
+    func replaceSavedPhotos(locatedIn directory: URL, with newPhotos: [(photo: UIImage, name: String)]) {
+        for suffix in 0..<3 {
+            let filename = "photo\(suffix)"
+            let fullPath = directory.appendingPathComponent(filename)
+
+            do {
+                try FileManager.default.removeItem(at: fullPath)
+                let photo = newPhotos.filter { $0.name == filename }.first
+                if let image = photo?.photo {
+                    save(image, to: fullPath)
+                }
+            } catch {
+                print("Couldn't delete \(filename)")
+            }
+        }
     }
 }
