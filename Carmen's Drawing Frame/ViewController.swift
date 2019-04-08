@@ -29,65 +29,50 @@ class ViewController: UIViewController {
     var gridView: PhotoGrid?
     var imagePickerController = UIImagePickerController()
     
-    var photos: [(photo: UIImage, name: String)] = []
+    var loadedPhotos: [LoadedPhoto] = []
+    var visibleIndex: Int = 0
     
-    let defaultDirectory = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask)[0]
-    let nameKey = "lastPhotoName"
+    let defaultsDirectory = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask)[0]
+    let loadedPhotosKey = "loadedPhotos"
+    let visibleIndexKey = "visibleIndex"
+    let numberOfPhotosToStore = 3
 
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        loadSavedPhotos(locatedIn: defaultDirectory)
+        retrieveSavedPhotos()
+        loadInitialVisiblePhoto()
         setUpImagePicker()
         setUpPhotoViews()
         setUpButtons()
         setUpLockLabel()
+        deleteStaleImageFiles()
     }
 }
 
 typealias PhotoSetUp = ViewController
 extension PhotoSetUp {
-    func loadSavedPhotos(locatedIn directory: URL) {
-        var loadedPhotos: [(photo: UIImage, name: String)] = []
-        
-        for suffix in 0..<3 {
-            let filename = "photo\(suffix)"
-            print("Attempting to retrieve \(filename)")
-            let fullpath = directory.appendingPathComponent(filename)
-            if let data = try? Data(contentsOf: fullpath), let photo = UIImage(data: data) {
-                loadedPhotos.append((photo: photo, name: filename))
-            } else {
-                print("Couldn't retrieve \(filename)")
+    func retrieveSavedPhotos() {
+        let decoder = JSONDecoder()
+        guard let detailsData = UserDefaults.standard.array(forKey: loadedPhotosKey) as? [Data] else { return }
+        for detailData in detailsData {
+            if let detail = try? decoder.decode(PhotoDetail.self, from: detailData) {
+                let path = defaultsDirectory.appendingPathComponent(detail.filename)
+                if let imageData = try? Data(contentsOf: path), let image = UIImage(data: imageData) {
+                    let loadedPhoto = LoadedPhoto(image: image, detail: detail)
+                    loadedPhotos.append(loadedPhoto)
+                }
             }
         }
-        
-        guard !loadedPhotos.isEmpty else { return }
-        
-        photos = loadedPhotos.sorted { $0.name < $1.name }
-        let previousName = UserDefaults.standard.string(forKey: nameKey)
-        let photo = photos.filter { $0.name == previousName }.first
-        if let newPhoto = photo?.photo {
-            show(newPhoto)
-        } else if let photo = photos.first {
-            show(photo.photo)
-        }
+        loadedPhotos.sortByTimestamp()
     }
     
-    func replaceSavedPhotos(locatedIn directory: URL, with newPhotos: [(photo: UIImage, name: String)]) {
-        for suffix in 0..<3 {
-            let filename = "photo\(suffix)"
-            let fullPath = directory.appendingPathComponent(filename)
-            
-            do {
-                try FileManager.default.removeItem(at: fullPath)
-                let photo = newPhotos.filter { $0.name == filename }.first
-                if let image = photo?.photo {
-                    save(image, to: fullPath)
-                }
-            } catch {
-                print("Couldn't delete \(filename)")
-            }
+    func loadInitialVisiblePhoto() {
+        visibleIndex = UserDefaults.standard.integer(forKey: visibleIndexKey)
+        if visibleIndex >= numberOfPhotosToStore {
+            visibleIndex = 0
         }
+        refreshVisiblePhoto()
     }
 }
 
@@ -138,7 +123,7 @@ extension ViewSetUp {
 typealias Visibility = ViewController
 extension Visibility {
     func setVisibilityForButtons() {
-        swapButton.isEnabled = photos.count > 1
+        swapButton.isEnabled = loadedPhotos.count > 1
         
         let isPhotoLoaded = (photoView.image != nil)
         let mainAlpha = isPhotoLoaded ? 1.0 : 0.0
@@ -159,12 +144,19 @@ extension Visibility {
         paletteButton.isUserInteractionEnabled = gridVisible
     }
     
-    func show(_ photo: UIImage) {
-        clearGrid()
-        let isPortrait = photoParentView.transform == DisplayRotation.portrait.transform
-        let newSize = isPortrait ? scaleToPortrait(photo.size) : photoParentView.bounds
-        photoView.image = photo
-        photoView.bounds = newSize
+    func refreshVisiblePhoto() {
+        DispatchQueue.main.async {
+            self.clearGrid()
+            guard let loadedPhoto = self.loadedPhotos[safe: self.visibleIndex] else {
+                self.photoView.image = nil
+                return
+            }
+            let isPortrait = self.photoParentView.transform == DisplayRotation.portrait.transform
+            let newSize = isPortrait ? self.scaleToPortrait(loadedPhoto.image.size) : self.photoParentView.bounds
+            self.photoView.image = loadedPhoto.image
+            self.photoView.bounds = newSize
+            self.setVisibilityForButtons()
+        }
     }
 }
 
@@ -180,22 +172,9 @@ extension ButtonActions {
     }
     
     @IBAction func swapTapped(_ sender: UIButton) {
-        let indexOfCurrent = photos.firstIndex { photo -> Bool in
-            let (image, _) = photo
-            return image == photoView.image
-        }
-        
-        guard let currentIndex = indexOfCurrent else { return }
-        var newIndex = currentIndex + 1
-        
-        if newIndex == photos.count, let photo = photos.first?.photo {
-            newIndex = 0
-            show(photo)
-        } else if photos.indices.contains(newIndex) {
-            show(photos[newIndex].photo)
-        }
-        
-        UserDefaults.standard.set(newIndex, forKey: nameKey)
+        visibleIndex = (visibleIndex + 1) == loadedPhotos.count ? 0 : (visibleIndex + 1)
+        refreshVisiblePhoto()
+        UserDefaults.standard.set(visibleIndex, forKey: visibleIndexKey)
     }
     
     @IBAction func lockTapped(_ sender: UIButton) {
@@ -286,9 +265,11 @@ extension Delegates: UINavigationControllerDelegate, UIImagePickerControllerDele
     func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info:  [UIImagePickerController.InfoKey : Any]) {
         dismiss(animated: true) { [weak self] in
             guard let strongSelf = self else { return }
-            guard let photo = info[UIImagePickerController.InfoKey.originalImage] as? UIImage else { return }
-            strongSelf.show(photo)
-            strongSelf.addNew(photo, to: strongSelf.defaultDirectory)
+            guard let image = info[UIImagePickerController.InfoKey.originalImage] as? UIImage,
+            let path = info[UIImagePickerController.InfoKey.imageURL] as? URL else { return }
+            let filename = path.lastPathComponent
+            let loadedPhoto = LoadedPhoto(image: image, detail: PhotoDetail(filename: filename, timestamp: Date().timeIntervalSince1970))
+            strongSelf.addNew(loadedPhoto)
             strongSelf.setVisibilityForButtons()
         }
     }
@@ -318,18 +299,18 @@ extension Grid {
 typealias Rotation = ViewController
 extension Rotation {
     func setPortraitRotation() {
-        guard let size = photoView.image?.size else { return }
+        buttons.forEach { $0.transform = DisplayRotation.portrait.transform }
         photoParentView.transform = DisplayRotation.portrait.transform
+        guard let size = photoView.image?.size else { return }
         let newSize = scaleToPortrait(size)
         photoView.bounds = newSize
         gridView?.frame = newSize
-        buttons.forEach { $0.transform = DisplayRotation.portrait.transform }
     }
     
     func setLandscapeRotation() {
         buttons.forEach { $0.transform = DisplayRotation.landscape.transform }
-        guard let size = photoView.image?.size else { return }
         photoParentView.transform = DisplayRotation.landscape.transform
+        guard let size = photoView.image?.size else { return }
         let newSize = scaleToLandscape(size)
         photoView.bounds = photoParentView.bounds
         gridView?.frame = newSize
@@ -338,48 +319,55 @@ extension Rotation {
 
 typealias Persistance = ViewController
 extension Persistance {
-    func removeLastPhoto(locatedIn directory: URL) {
-        let previousIndex = photos.count - 1
-        photos.remove(at: previousIndex)
-        let deletePath = directory.appendingPathComponent("photo\(previousIndex)")
+    func addNew(_ photo: LoadedPhoto) {
+        loadPhoto(photo)
+        refreshVisiblePhoto()
+        save(photo)
+        deleteStaleImageFiles()
+        updateDefaults()
+    }
+    
+    func loadPhoto(_ photo: LoadedPhoto) {
+        if let matchingIndex = loadedPhotos.firstIndex(where: { $0.detail.filename == photo.detail.filename }) {
+            loadedPhotos[matchingIndex].detail.timestamp = photo.detail.timestamp
+            loadedPhotos.sortByTimestamp()
+            visibleIndex = matchingIndex
+        } else {
+            loadedPhotos.insert(photo, at: 0)
+            visibleIndex = 0
+        }
+        UserDefaults.standard.set(visibleIndex, forKey: visibleIndexKey)
+    }
+    
+    func save(_ loadedPhoto: LoadedPhoto) {
+        guard let imageData = loadedPhoto.image.pngData() else { return }
+        let savePath = defaultsDirectory.appendingPathComponent(loadedPhoto.detail.filename)
         do {
-            try FileManager.default.removeItem(at: deletePath)
+            try imageData.write(to: savePath)
         } catch {
-            print("Couldn't delete photo2")
+            print("Couldn't write \(loadedPhoto.detail.filename)")
         }
     }
     
-    func addNew(_ photo: UIImage, to directory: URL) {
-        let fileName = "photo0"
-        let fullPath = directory.appendingPathComponent(fileName)
-        if photos.count == 3 {
-            removeLastPhoto(locatedIn: directory)
-        }
-        shiftSavedPhotos(locatedIn: directory)
-        photos.insert((photo, fileName), at: 0)
-        save(photo, to: fullPath)
-        setVisibilityForButtons()
-    }
-    
-    func shiftSavedPhotos(locatedIn directory: URL) {
-        for index in 0..<photos.count {
-            let oldPath = directory.appendingPathComponent("photo\(index)")
-            let filename = (index == photos.count - 1) ? "photo0" : "photo\(index + 1)"
-            let newPath = directory.appendingPathComponent(filename)
-            do {
-                try FileManager.default.moveItem(at: oldPath, to: newPath)
-            } catch {
-                print("Couldn't move saved \(filename)")
+    func deleteStaleImageFiles() {
+        if loadedPhotos.count > numberOfPhotosToStore {
+            for index in numberOfPhotosToStore..<loadedPhotos.count {
+                let photoToDelete = loadedPhotos[index - 1]
+                let deletePath = defaultsDirectory.appendingPathComponent(photoToDelete.detail.filename)
+                do {
+                    try FileManager.default.removeItem(at: deletePath)
+                    loadedPhotos.remove(at: index)
+                } catch {
+                    print("Couldn't delete photo at \(photoToDelete.detail.filename)")
+                }
             }
         }
     }
     
-    func save(_ photo: UIImage, to fullPath: URL) {
-        guard let data = photo.pngData() else { return }
-        do {
-            try data.write(to: fullPath)
-        } catch {
-            print("Couldn't write \(fullPath.lastPathComponent)")
+    func updateDefaults() {
+        let encoder = JSONEncoder()
+        let details = loadedPhotos.compactMap { try? encoder.encode($0.detail)
         }
+        UserDefaults.standard.set(details, forKey: loadedPhotosKey)
     }
 }
