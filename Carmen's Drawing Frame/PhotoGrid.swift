@@ -193,7 +193,5 @@ extension PublicAPI {
         self.gridType = type ?? .none
         self.lineColor = color ?? .white
         self.updateVisible()
-//        DispatchQueue.main.async {
-//        }
     }
 }

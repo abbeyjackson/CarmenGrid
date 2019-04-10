@@ -401,25 +401,39 @@ typealias Persistance = ViewController
 extension Persistance {
     func addNew(_ photo: LoadedPhoto) {
         print("addNew")
-        loadPhoto(photo)
-        refreshVisiblePhoto()
-        save(photo)
-        deleteStaleImageFiles()
-        updateDefaults()
+        loadPhoto(photo) { success in
+            guard success else { return }
+            self.refreshVisiblePhoto()
+            self.save(photo)
+            self.deleteStaleImageFiles()
+            self.updateDefaults()
+        }
     }
     
-    func loadPhoto(_ photo: LoadedPhoto) {
+    func loadPhoto(_ photo: LoadedPhoto, success: @escaping (Bool) -> ()) {
         if let matchingIndex = loadedPhotos.firstIndex(where: { $0.detail.filename == photo.detail.filename }) {
             print("timestamp updated on matching index")
             loadedPhotos[matchingIndex].detail.timestamp = photo.detail.timestamp
             loadedPhotos.sortByTimestamp()
             visibleIndex = 0
+            success(true)
+        } else if loadedPhotos.count + 1 == numberOfPhotosToStore {
+            let alert = UIAlertController(title: "Warning", message: "You have 3 photos loaded already. Replace current photo?", preferredStyle: .alert)
+            let okAction = UIAlertAction(title: "Replace Current", style: .destructive) { _ in
+                print("new photo inserted at visible index: \(self.visibleIndex)")
+                self.loadedPhotos[self.visibleIndex] = photo
+                success(true)
+            }
+            let cancelAction = UIAlertAction(title: "Cancel", style: .cancel) { _ in
+                success(false)
+            }
+            alert.addAction(okAction)
+            alert.addAction(cancelAction)
+            self.present(alert, animated: true, completion: nil)
         } else {
-            print("new photo inserted at index 0")
-            loadedPhotos.insert(photo, at: 0)
-            visibleIndex = 0
+            self.loadedPhotos[self.visibleIndex] = photo
+            success(true)
         }
-        updateDefaults()
     }
     
     func save(_ loadedPhoto: LoadedPhoto) {
