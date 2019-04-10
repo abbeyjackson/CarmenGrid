@@ -1,5 +1,5 @@
 //
-//  CustomGridView.swift
+//  PhotoGrid.swift
 //  Carmen's Drawing Frame
 //
 //  Created by Abbey Jackson on 2019-03-28.
@@ -24,7 +24,7 @@ import UIKit
     
     var lineWidth: CGFloat = 3.5
     var lineColor: GridColor = .white
-    var gridType: GridType = .squares
+    var gridType: GridType = .none
     
     private var smallestSide: CGFloat {
         return min(drawableWidth, drawableHeight)
@@ -36,11 +36,11 @@ import UIKit
     
     //MARK: Drawing
     override func draw(_ rect: CGRect) {
-        setGuideLines()
+        setGuides()
         drawLines()
     }
     
-    private func setGuideLines() {
+    private func setGuides() {
         switch gridType {
         case .squares:
             columnWidth = Int(smallestSide / 4)
@@ -64,10 +64,13 @@ import UIKit
     }
     
     private func drawLines() {
+        print("draw lines")
         guard numberOfRows > 0 && numberOfColumns > 0 else { return }
+        print("number of rows / columns")
         
         guard let context = UIGraphicsGetCurrentContext() else {
             return }
+        print("context")
         
         context.setLineWidth(lineWidth)
         context.setStrokeColor(lineColor.color)
@@ -83,6 +86,7 @@ import UIKit
     
     //MARK: Line Calculations
     private func drawVerticalLines(on context: CGContext) {
+        print("\(numberOfColumns) columns")
         for i in 0...numberOfColumns + 1 {
             var startPoint = CGPoint.zero
             var endPoint = CGPoint.zero
@@ -97,6 +101,7 @@ import UIKit
     }
     
     private func drawHorizontalLines(on context: CGContext) {
+        print("\(numberOfRows) rows")
         for j in 0...numberOfRows + 1 {
             var startPoint = CGPoint.zero
             var endPoint = CGPoint.zero
@@ -157,41 +162,38 @@ import UIKit
             context.strokePath()
         }
     }
-}
-
-private typealias Enums = PhotoGrid
-extension Enums {
-    enum GridColor: Int {
-        case white, black, red, blue
-        
-        var color: CGColor {
-            switch self {
-            case .white: return UIColor.white.cgColor
-            case .black: return UIColor.black.cgColor
-            case .red: return UIColor.red.cgColor
-            case .blue: return UIColor.blue.cgColor
-            }
-        }
-    }
     
-    enum GridType: Int {
-        case squares, triangles, smallTriangles, none
+    private func updateVisible() {
+        print("update visible")
+        setNeedsDisplay()
+        setNeedsLayout()
+        draw(self.bounds)
+        layoutIfNeeded()
     }
 }
 
 private typealias PublicAPI = PhotoGrid
 extension PublicAPI {
-    func swapLineColour() {
-        lineColor = GridColor(rawValue: lineColor.rawValue + 1) ?? .white
-        setNeedsDisplay()
-        setNeedsLayout()
-        layoutIfNeeded()
+    func swapGrid(completion: (_ newGridType: GridType) -> ()) {
+        print("swap from current \(gridType.rawValue)")
+        gridType = GridType(rawValue: gridType.rawValue + 1) ?? .none
+        updateVisible()
+        completion(gridType)
     }
     
-    func swapGrid() {
-        gridType = GridType(rawValue: gridType.rawValue + 1) ?? .squares
-        setNeedsDisplay()
-        setNeedsLayout()
-        layoutIfNeeded()
+    func swapLineColor(completion: (_ newGridColor: GridColor) -> ()) {
+        print("swap color")
+        lineColor = GridColor(rawValue: lineColor.rawValue + 1) ?? .white
+        updateVisible()
+        completion(lineColor)
+    }
+    
+    func set(type: GridType?, color: GridColor?) {
+        print("grid set called")
+        self.gridType = type ?? .none
+        self.lineColor = color ?? .white
+        self.updateVisible()
+//        DispatchQueue.main.async {
+//        }
     }
 }

@@ -8,7 +8,12 @@
 
 import UIKit
 
-struct LoadedPhoto {
+class LoadedPhoto {
     let image: UIImage
     var detail: PhotoDetail
+    
+    init(image: UIImage, detail: PhotoDetail) {
+        self.image = image
+        self.detail = detail
+    }
 }

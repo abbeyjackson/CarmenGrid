@@ -8,7 +8,16 @@
 
 import UIKit
 
-struct PhotoDetail: Codable {
+class PhotoDetail: Codable {
     let filename: String
     var timestamp: TimeInterval
+    var gridType: Int = 0
+    var gridColor: Int = 0
+    
+    init(filename: String, timestamp: TimeInterval, gridType: Int = 0, gridColor: Int = 0) {
+        self.filename = filename
+        self.timestamp = timestamp
+        self.gridType = gridType
+        self.gridColor = gridColor
+    }
 }
