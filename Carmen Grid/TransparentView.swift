@@ -1,6 +1,6 @@
 //
 //  TransparentView.swift
-//  Carmen's Drawing Frame
+//  Carmen Grid
 //
 //  Created by Abbey Jackson on 2019-03-29.
 //  Copyright © 2019 Abbey Jackson. All rights reserved.

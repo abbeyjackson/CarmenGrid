@@ -1,6 +1,6 @@
 //
 //  DisplayRotation.swift
-//  Carmen's Drawing Frame
+//  Carmen Grid
 //
 //  Created by Abbey Jackson on 2019-04-04.
 //  Copyright © 2019 Abbey Jackson. All rights reserved.

@@ -7,35 +7,37 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		532D3C87224DCDB50066582C /* PhotoGrid.swift in Sources */ = {isa = PBXBuildFile; fileRef = 532D3C86224DCDB50066582C /* PhotoGrid.swift */; };
-		532D3C89224E77E70066582C /* TransparentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 532D3C88224E77E70066582C /* TransparentView.swift */; };
-		532F88EE22570E420033A18B /* DisplayRotation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 532F88ED22570E420033A18B /* DisplayRotation.swift */; };
-		535EBF82225AF05F00AF943D /* PhotoDetail.swift in Sources */ = {isa = PBXBuildFile; fileRef = 535EBF81225AF05E00AF943D /* PhotoDetail.swift */; };
-		535EBF84225AF30900AF943D /* LoadedPhoto.swift in Sources */ = {isa = PBXBuildFile; fileRef = 535EBF83225AF30900AF943D /* LoadedPhoto.swift */; };
-		535EBF86225AF81E00AF943D /* ArrayExtensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 535EBF85225AF81E00AF943D /* ArrayExtensions.swift */; };
-		535EBF88225BA20D00AF943D /* PhotoGridEnums.swift in Sources */ = {isa = PBXBuildFile; fileRef = 535EBF87225BA20D00AF943D /* PhotoGridEnums.swift */; };
-		53DD3276224AE46500676BBE /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 53DD3275224AE46500676BBE /* AppDelegate.swift */; };
-		53DD3278224AE46500676BBE /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 53DD3277224AE46500676BBE /* ViewController.swift */; };
-		53DD327B224AE46500676BBE /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 53DD3279224AE46500676BBE /* Main.storyboard */; };
-		53DD327D224AE46B00676BBE /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 53DD327C224AE46B00676BBE /* Assets.xcassets */; };
-		53DD3280224AE46B00676BBE /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 53DD327E224AE46B00676BBE /* LaunchScreen.storyboard */; };
+		535EBFD8225DBB0900AF943D /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 535EBFC4225DBB0800AF943D /* Main.storyboard */; };
+		535EBFD9225DBB0900AF943D /* PhotoDetail.swift in Sources */ = {isa = PBXBuildFile; fileRef = 535EBFC6225DBB0800AF943D /* PhotoDetail.swift */; };
+		535EBFDA225DBB0900AF943D /* TransparentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 535EBFC7225DBB0800AF943D /* TransparentView.swift */; };
+		535EBFDB225DBB0900AF943D /* PhotoGrid.swift in Sources */ = {isa = PBXBuildFile; fileRef = 535EBFC8225DBB0800AF943D /* PhotoGrid.swift */; };
+		535EBFDC225DBB0900AF943D /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 535EBFC9225DBB0800AF943D /* ViewController.swift */; };
+		535EBFDD225DBB0900AF943D /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 535EBFCA225DBB0800AF943D /* Assets.xcassets */; };
+		535EBFDF225DBB0900AF943D /* LoadedPhoto.swift in Sources */ = {isa = PBXBuildFile; fileRef = 535EBFCD225DBB0800AF943D /* LoadedPhoto.swift */; };
+		535EBFE0225DBB0900AF943D /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 535EBFCF225DBB0800AF943D /* LaunchScreen.storyboard */; };
+		535EBFE3225DBB0900AF943D /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 535EBFD4225DBB0900AF943D /* AppDelegate.swift */; };
+		535EBFE4225DBB0900AF943D /* PhotoGridEnums.swift in Sources */ = {isa = PBXBuildFile; fileRef = 535EBFD5225DBB0900AF943D /* PhotoGridEnums.swift */; };
+		535EBFE5225DBB0900AF943D /* DisplayRotation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 535EBFD6225DBB0900AF943D /* DisplayRotation.swift */; };
+		535EBFE6225DBB0900AF943D /* ArrayExtensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 535EBFD7225DBB0900AF943D /* ArrayExtensions.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
-		532D3C86224DCDB50066582C /* PhotoGrid.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PhotoGrid.swift; sourceTree = "<group>"; };
-		532D3C88224E77E70066582C /* TransparentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TransparentView.swift; sourceTree = "<group>"; };
-		532F88ED22570E420033A18B /* DisplayRotation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DisplayRotation.swift; sourceTree = "<group>"; };
-		535EBF81225AF05E00AF943D /* PhotoDetail.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PhotoDetail.swift; sourceTree = "<group>"; };
-		535EBF83225AF30900AF943D /* LoadedPhoto.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoadedPhoto.swift; sourceTree = "<group>"; };
-		535EBF85225AF81E00AF943D /* ArrayExtensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ArrayExtensions.swift; sourceTree = "<group>"; };
-		535EBF87225BA20D00AF943D /* PhotoGridEnums.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PhotoGridEnums.swift; sourceTree = "<group>"; };
-		53DD3272224AE46500676BBE /* Carmen's Drawing Frame.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Carmen's Drawing Frame.app"; sourceTree = BUILT_PRODUCTS_DIR; };
-		53DD3275224AE46500676BBE /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
-		53DD3277224AE46500676BBE /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
-		53DD327A224AE46500676BBE /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
-		53DD327C224AE46B00676BBE /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
-		53DD327F224AE46B00676BBE /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
-		53DD3281224AE46C00676BBE /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		535EBFC5225DBB0800AF943D /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
+		535EBFC6225DBB0800AF943D /* PhotoDetail.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PhotoDetail.swift; sourceTree = "<group>"; };
+		535EBFC7225DBB0800AF943D /* TransparentView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TransparentView.swift; sourceTree = "<group>"; };
+		535EBFC8225DBB0800AF943D /* PhotoGrid.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PhotoGrid.swift; sourceTree = "<group>"; };
+		535EBFC9225DBB0800AF943D /* ViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
+		535EBFCA225DBB0800AF943D /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		535EBFCC225DBB0800AF943D /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
+		535EBFCD225DBB0800AF943D /* LoadedPhoto.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LoadedPhoto.swift; sourceTree = "<group>"; };
+		535EBFD0225DBB0800AF943D /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = LaunchScreen.storyboard; sourceTree = "<group>"; };
+		535EBFD2225DBB0800AF943D /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Main.storyboard; sourceTree = "<group>"; };
+		535EBFD3225DBB0900AF943D /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		535EBFD4225DBB0900AF943D /* AppDelegate.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
+		535EBFD5225DBB0900AF943D /* PhotoGridEnums.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PhotoGridEnums.swift; sourceTree = "<group>"; };
+		535EBFD6225DBB0900AF943D /* DisplayRotation.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DisplayRotation.swift; sourceTree = "<group>"; };
+		535EBFD7225DBB0900AF943D /* ArrayExtensions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ArrayExtensions.swift; sourceTree = "<group>"; };
+		53DD3272224AE46500676BBE /* Carmen Grid.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Carmen Grid.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -49,10 +51,40 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		535EBFAF225DBA5C00AF943D /* Carmen Grid */ = {
+			isa = PBXGroup;
+			children = (
+				535EBFD4225DBB0900AF943D /* AppDelegate.swift */,
+				535EBFD7225DBB0900AF943D /* ArrayExtensions.swift */,
+				535EBFCA225DBB0800AF943D /* Assets.xcassets */,
+				535EBFCE225DBB0800AF943D /* Base.lproj */,
+				535EBFD6225DBB0900AF943D /* DisplayRotation.swift */,
+				535EBFD3225DBB0900AF943D /* Info.plist */,
+				535EBFCB225DBB0800AF943D /* LaunchScreen.storyboard */,
+				535EBFCD225DBB0800AF943D /* LoadedPhoto.swift */,
+				535EBFC4225DBB0800AF943D /* Main.storyboard */,
+				535EBFC6225DBB0800AF943D /* PhotoDetail.swift */,
+				535EBFC8225DBB0800AF943D /* PhotoGrid.swift */,
+				535EBFD5225DBB0900AF943D /* PhotoGridEnums.swift */,
+				535EBFC7225DBB0800AF943D /* TransparentView.swift */,
+				535EBFC9225DBB0800AF943D /* ViewController.swift */,
+			);
+			path = "Carmen Grid";
+			sourceTree = SOURCE_ROOT;
+		};
+		535EBFCE225DBB0800AF943D /* Base.lproj */ = {
+			isa = PBXGroup;
+			children = (
+				535EBFCF225DBB0800AF943D /* LaunchScreen.storyboard */,
+				535EBFD1225DBB0800AF943D /* Main.storyboard */,
+			);
+			path = Base.lproj;
+			sourceTree = "<group>";
+		};
 		53DD3269224AE46500676BBE = {
 			isa = PBXGroup;
 			children = (
-				53DD3274224AE46500676BBE /* Carmen's Drawing Frame */,
+				535EBFAF225DBA5C00AF943D /* Carmen Grid */,
 				53DD3273224AE46500676BBE /* Products */,
 			);
 			sourceTree = "<group>";
@@ -60,37 +92,17 @@
 		53DD3273224AE46500676BBE /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				53DD3272224AE46500676BBE /* Carmen's Drawing Frame.app */,
+				53DD3272224AE46500676BBE /* Carmen Grid.app */,
 			);
 			name = Products;
-			sourceTree = "<group>";
-		};
-		53DD3274224AE46500676BBE /* Carmen's Drawing Frame */ = {
-			isa = PBXGroup;
-			children = (
-				53DD3275224AE46500676BBE /* AppDelegate.swift */,
-				53DD3277224AE46500676BBE /* ViewController.swift */,
-				53DD3279224AE46500676BBE /* Main.storyboard */,
-				53DD327C224AE46B00676BBE /* Assets.xcassets */,
-				53DD327E224AE46B00676BBE /* LaunchScreen.storyboard */,
-				53DD3281224AE46C00676BBE /* Info.plist */,
-				532D3C86224DCDB50066582C /* PhotoGrid.swift */,
-				535EBF87225BA20D00AF943D /* PhotoGridEnums.swift */,
-				532D3C88224E77E70066582C /* TransparentView.swift */,
-				532F88ED22570E420033A18B /* DisplayRotation.swift */,
-				535EBF81225AF05E00AF943D /* PhotoDetail.swift */,
-				535EBF83225AF30900AF943D /* LoadedPhoto.swift */,
-				535EBF85225AF81E00AF943D /* ArrayExtensions.swift */,
-			);
-			path = "Carmen's Drawing Frame";
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
-		53DD3271224AE46500676BBE /* Carmen's Drawing Frame */ = {
+		53DD3271224AE46500676BBE /* Carmen Grid */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = 53DD3284224AE46C00676BBE /* Build configuration list for PBXNativeTarget "Carmen's Drawing Frame" */;
+			buildConfigurationList = 53DD3284224AE46C00676BBE /* Build configuration list for PBXNativeTarget "Carmen Grid" */;
 			buildPhases = (
 				53DD326E224AE46500676BBE /* Sources */,
 				53DD326F224AE46500676BBE /* Frameworks */,
@@ -100,9 +112,9 @@
 			);
 			dependencies = (
 			);
-			name = "Carmen's Drawing Frame";
-			productName = "Carmen's Drawing Frame";
-			productReference = 53DD3272224AE46500676BBE /* Carmen's Drawing Frame.app */;
+			name = "Carmen Grid";
+			productName = "Carmen Grid";
+			productReference = 53DD3272224AE46500676BBE /* Carmen Grid.app */;
 			productType = "com.apple.product-type.application";
 		};
 /* End PBXNativeTarget section */
@@ -117,10 +129,11 @@
 				TargetAttributes = {
 					53DD3271224AE46500676BBE = {
 						CreatedOnToolsVersion = 10.1;
+						LastSwiftMigration = 1020;
 					};
 				};
 			};
-			buildConfigurationList = 53DD326D224AE46500676BBE /* Build configuration list for PBXProject "Carmen's Drawing Frame" */;
+			buildConfigurationList = 53DD326D224AE46500676BBE /* Build configuration list for PBXProject "Carmen Grid" */;
 			compatibilityVersion = "Xcode 9.3";
 			developmentRegion = en;
 			hasScannedForEncodings = 0;
@@ -133,7 +146,7 @@
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
-				53DD3271224AE46500676BBE /* Carmen's Drawing Frame */,
+				53DD3271224AE46500676BBE /* Carmen Grid */,
 			);
 		};
 /* End PBXProject section */
@@ -143,9 +156,9 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				53DD3280224AE46B00676BBE /* LaunchScreen.storyboard in Resources */,
-				53DD327D224AE46B00676BBE /* Assets.xcassets in Resources */,
-				53DD327B224AE46500676BBE /* Main.storyboard in Resources */,
+				535EBFDD225DBB0900AF943D /* Assets.xcassets in Resources */,
+				535EBFE0225DBB0900AF943D /* LaunchScreen.storyboard in Resources */,
+				535EBFD8225DBB0900AF943D /* Main.storyboard in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -156,35 +169,51 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				532D3C87224DCDB50066582C /* PhotoGrid.swift in Sources */,
-				532D3C89224E77E70066582C /* TransparentView.swift in Sources */,
-				53DD3278224AE46500676BBE /* ViewController.swift in Sources */,
-				535EBF82225AF05F00AF943D /* PhotoDetail.swift in Sources */,
-				532F88EE22570E420033A18B /* DisplayRotation.swift in Sources */,
-				535EBF84225AF30900AF943D /* LoadedPhoto.swift in Sources */,
-				53DD3276224AE46500676BBE /* AppDelegate.swift in Sources */,
-				535EBF88225BA20D00AF943D /* PhotoGridEnums.swift in Sources */,
-				535EBF86225AF81E00AF943D /* ArrayExtensions.swift in Sources */,
+				535EBFD9225DBB0900AF943D /* PhotoDetail.swift in Sources */,
+				535EBFDB225DBB0900AF943D /* PhotoGrid.swift in Sources */,
+				535EBFE3225DBB0900AF943D /* AppDelegate.swift in Sources */,
+				535EBFDF225DBB0900AF943D /* LoadedPhoto.swift in Sources */,
+				535EBFE6225DBB0900AF943D /* ArrayExtensions.swift in Sources */,
+				535EBFE4225DBB0900AF943D /* PhotoGridEnums.swift in Sources */,
+				535EBFDA225DBB0900AF943D /* TransparentView.swift in Sources */,
+				535EBFDC225DBB0900AF943D /* ViewController.swift in Sources */,
+				535EBFE5225DBB0900AF943D /* DisplayRotation.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXVariantGroup section */
-		53DD3279224AE46500676BBE /* Main.storyboard */ = {
+		535EBFC4225DBB0800AF943D /* Main.storyboard */ = {
 			isa = PBXVariantGroup;
 			children = (
-				53DD327A224AE46500676BBE /* Base */,
+				535EBFC5225DBB0800AF943D /* Base */,
 			);
 			name = Main.storyboard;
 			sourceTree = "<group>";
 		};
-		53DD327E224AE46B00676BBE /* LaunchScreen.storyboard */ = {
+		535EBFCB225DBB0800AF943D /* LaunchScreen.storyboard */ = {
 			isa = PBXVariantGroup;
 			children = (
-				53DD327F224AE46B00676BBE /* Base */,
+				535EBFCC225DBB0800AF943D /* Base */,
 			);
 			name = LaunchScreen.storyboard;
+			sourceTree = "<group>";
+		};
+		535EBFCF225DBB0800AF943D /* LaunchScreen.storyboard */ = {
+			isa = PBXVariantGroup;
+			children = (
+				535EBFD0225DBB0800AF943D /* Base */,
+			);
+			name = LaunchScreen.storyboard;
+			sourceTree = "<group>";
+		};
+		535EBFD1225DBB0800AF943D /* Main.storyboard */ = {
+			isa = PBXVariantGroup;
+			children = (
+				535EBFD2225DBB0800AF943D /* Base */,
+			);
+			name = Main.storyboard;
 			sourceTree = "<group>";
 		};
 /* End PBXVariantGroup section */
@@ -310,16 +339,18 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = 3YHZ656JF9;
-				INFOPLIST_FILE = "Carmen's Drawing Frame/Info.plist";
+				INFOPLIST_FILE = "Carmen Grid/Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 12.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = "ca.abbeyjackson.Carmen-s-Drawing-Frame";
+				PRODUCT_BUNDLE_IDENTIFIER = ca.abbeyjackson.CarmenGrid;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				SWIFT_VERSION = 4.2;
 				TARGETED_DEVICE_FAMILY = 2;
 			};
@@ -329,15 +360,16 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = 3YHZ656JF9;
-				INFOPLIST_FILE = "Carmen's Drawing Frame/Info.plist";
+				INFOPLIST_FILE = "Carmen Grid/Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 12.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = "ca.abbeyjackson.Carmen-s-Drawing-Frame";
+				PRODUCT_BUNDLE_IDENTIFIER = ca.abbeyjackson.CarmenGrid;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 4.2;
 				TARGETED_DEVICE_FAMILY = 2;
@@ -347,7 +379,7 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
-		53DD326D224AE46500676BBE /* Build configuration list for PBXProject "Carmen's Drawing Frame" */ = {
+		53DD326D224AE46500676BBE /* Build configuration list for PBXProject "Carmen Grid" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				53DD3282224AE46C00676BBE /* Debug */,
@@ -356,7 +388,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		53DD3284224AE46C00676BBE /* Build configuration list for PBXNativeTarget "Carmen's Drawing Frame" */ = {
+		53DD3284224AE46C00676BBE /* Build configuration list for PBXNativeTarget "Carmen Grid" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				53DD3285224AE46C00676BBE /* Debug */,
