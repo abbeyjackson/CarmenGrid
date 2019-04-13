@@ -36,6 +36,7 @@ import UIKit
     
     //MARK: Drawing
     override func draw(_ rect: CGRect) {
+        print("drawing grid type \(gridType)")
         setGuides()
         drawLines()
     }
@@ -64,13 +65,11 @@ import UIKit
     }
     
     private func drawLines() {
-        print("draw lines")
         guard numberOfRows > 0 && numberOfColumns > 0 else { return }
-        print("number of rows / columns")
         
         guard let context = UIGraphicsGetCurrentContext() else {
             return }
-        print("context")
+        print("context exists, drawing lines")
         
         context.setLineWidth(lineWidth)
         context.setStrokeColor(lineColor.color)
@@ -86,7 +85,6 @@ import UIKit
     
     //MARK: Line Calculations
     private func drawVerticalLines(on context: CGContext) {
-        print("\(numberOfColumns) columns")
         for i in 0...numberOfColumns + 1 {
             var startPoint = CGPoint.zero
             var endPoint = CGPoint.zero
@@ -101,7 +99,6 @@ import UIKit
     }
     
     private func drawHorizontalLines(on context: CGContext) {
-        print("\(numberOfRows) rows")
         for j in 0...numberOfRows + 1 {
             var startPoint = CGPoint.zero
             var endPoint = CGPoint.zero

@@ -131,7 +131,7 @@ extension PhotoSetUp {
 typealias ViewSetUp = ViewController
 extension ViewSetUp {
     func setUpImagePicker() {
-        imagePickerController.modalPresentationStyle = UIModalPresentationStyle.currentContext
+        imagePickerController.modalPresentationStyle = .pageSheet
         imagePickerController.delegate = self as UINavigationControllerDelegate & UIImagePickerControllerDelegate
     }
     
@@ -142,20 +142,12 @@ extension ViewSetUp {
     }
     
     func setUpButtons() {
-        let imageInset = CGFloat(2)
-        let hotizontalInsets = CGFloat(0)
-        
         for button in buttons {
             guard let name = button.accessibilityLabel else { return }
-            let verticalInsets = CGFloat(button.bounds.height/4)
             let image = UIImage(named: name)?.withRenderingMode(.alwaysTemplate)
             button.setImage(image, for: .normal)
             button.tintColor = UIColor.gray
-            button.imageEdgeInsets = UIEdgeInsets(top: imageInset,
-                                                  left: imageInset,
-                                                  bottom: imageInset,
-                                                  right: imageInset)
-            button.contentEdgeInsets = UIEdgeInsets(top: verticalInsets, left: hotizontalInsets, bottom: verticalInsets, right: hotizontalInsets)
+            button.imageView?.contentMode = .scaleAspectFit
         }
     }
     
@@ -199,6 +191,7 @@ extension Visibility {
             photoView.image = nil
             return
         }
+        print("refresh visible photo")
         photoView.image = loadedPhoto.image
         let isPortrait = photoParentView.transform == DisplayRotation.portrait.transform
         isPortrait ? setPortraitRotation() : setLandscapeRotation()
@@ -384,6 +377,7 @@ extension Rotation {
         let newSize = scaleToPortrait(size)
         photoView.bounds = newSize
         gridView?.frame = newSize
+        imagePickerController.view.transform = DisplayRotation.portrait.transform
     }
     
     func setLandscapeRotation() {
@@ -394,6 +388,7 @@ extension Rotation {
         let newSize = scaleToLandscape(size)
         photoView.bounds = photoParentView.bounds
         gridView?.frame = newSize
+        imagePickerController.view.transform = DisplayRotation.landscape.transform
     }
 }
 
@@ -417,7 +412,7 @@ extension Persistance {
             loadedPhotos.sortByTimestamp()
             visibleIndex = 0
             success(true)
-        } else if loadedPhotos.count + 1 == numberOfPhotosToStore {
+        } else if loadedPhotos.count == numberOfPhotosToStore {
             let alert = UIAlertController(title: "Warning", message: "You have 3 photos loaded already. Replace current photo?", preferredStyle: .alert)
             let okAction = UIAlertAction(title: "Replace Current", style: .destructive) { _ in
                 print("new photo inserted at visible index: \(self.visibleIndex)")
@@ -431,13 +426,18 @@ extension Persistance {
             alert.addAction(cancelAction)
             self.present(alert, animated: true, completion: nil)
         } else {
-            self.loadedPhotos[self.visibleIndex] = photo
+            print("no matching photo and no matching index, inserting photo at index \(self.visibleIndex)")
+            self.loadedPhotos.insert(photo, at: self.visibleIndex)
             success(true)
         }
     }
     
     func save(_ loadedPhoto: LoadedPhoto) {
-        guard let imageData = loadedPhoto.image.pngData() else { return }
+        guard let imageData = loadedPhoto.image.pngData() else {
+            print("could not create photo data")
+            return
+            
+        }
         let savePath = defaultsDirectory.appendingPathComponent(loadedPhoto.detail.filename)
         do {
             try imageData.write(to: savePath)
