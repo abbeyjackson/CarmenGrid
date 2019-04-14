@@ -201,12 +201,23 @@ extension Visibility {
 typealias ButtonActions = ViewController
 extension ButtonActions {
     @IBAction func photoTapped(_ sender: UIButton) {
-        if UIImagePickerController.isSourceTypeAvailable(.photoLibrary) {
-            self.present(imagePickerController, animated: true, completion: nil)
-        } else {
-            let alert = UIAlertController(title: "Error", message: "Your device can not display the photo library", preferredStyle: .alert)
+        guard PHPhotoLibrary.authorizationStatus() == .authorized else {
+            let alert = UIAlertController(title: "Error", message: "You have denied access to your Photo Library. Please open your device Settings, tap on \"Privacy\" and allow Photos access for Carmen Grid.", preferredStyle: .alert)
+            let okAction = UIAlertAction(title: "Ok", style: .cancel, handler: nil)
+            alert.addAction(okAction)
             self.present(alert, animated: true, completion: nil)
+            return
         }
+        
+        guard UIImagePickerController.isSourceTypeAvailable(.photoLibrary) else {
+            let alert = UIAlertController(title: "Error", message: "Your device can not display the photo library", preferredStyle: .alert)
+            let okAction = UIAlertAction(title: "Ok", style: .cancel, handler: nil)
+            alert.addAction(okAction)
+            self.present(alert, animated: true, completion: nil)
+            return
+        }
+        
+        self.present(imagePickerController, animated: true, completion: nil)
     }
     
     @IBAction func swapTapped(_ sender: UIButton) {
