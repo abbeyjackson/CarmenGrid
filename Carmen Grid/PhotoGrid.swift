@@ -36,7 +36,6 @@ import UIKit
     
     //MARK: Drawing
     override func draw(_ rect: CGRect) {
-        print("drawing grid type \(gridType)")
         setGuides()
         drawLines()
     }
@@ -69,7 +68,6 @@ import UIKit
         
         guard let context = UIGraphicsGetCurrentContext() else {
             return }
-        print("context exists, drawing lines")
         
         context.setLineWidth(lineWidth)
         context.setStrokeColor(lineColor.color)
@@ -161,7 +159,6 @@ import UIKit
     }
     
     private func updateVisible() {
-        print("update visible")
         setNeedsDisplay()
         setNeedsLayout()
         draw(self.bounds)
@@ -172,21 +169,18 @@ import UIKit
 private typealias PublicAPI = PhotoGrid
 extension PublicAPI {
     func swapGrid(completion: (_ newGridType: GridType) -> ()) {
-        print("swap from current \(gridType.rawValue)")
         gridType = GridType(rawValue: gridType.rawValue + 1) ?? .none
         updateVisible()
         completion(gridType)
     }
     
     func swapLineColor(completion: (_ newGridColor: GridColor) -> ()) {
-        print("swap color")
         lineColor = GridColor(rawValue: lineColor.rawValue + 1) ?? .white
         updateVisible()
         completion(lineColor)
     }
     
     func set(type: GridType?, color: GridColor?) {
-        print("grid set called")
         self.gridType = type ?? .none
         self.lineColor = color ?? .white
         self.updateVisible()
