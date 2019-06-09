@@ -11,27 +11,28 @@ import UIKit
 @IBDesignable class PhotoGrid: UIView {
     
     //MARK: Properties
-    var drawableWidth: CGFloat {
-        return frame.size.width
+    var drawableWidth: Double {
+        return Double(frame.size.width)
     }
-    var drawableHeight: CGFloat {
-        return frame.size.height
+    var drawableHeight: Double {
+        return Double(frame.size.height)
     }
     var numberOfColumns: Int = 0
     var numberOfRows: Int = 0
-    var columnWidth: Int = 0
-    var rowHeight: Int = 0
+    var columnWidth = 0.0
+    var rowHeight = 0.0
     
-    var lineWidth: CGFloat = 3.5
+    var lineWidth: CGFloat = 3
+    var lineOffset: CGFloat { return lineWidth / 2 }
     var lineColor: GridColor = .white
     var gridType: GridType = .none
     
-    private var smallestSide: CGFloat {
-        return min(drawableWidth, drawableHeight)
+    private var smallestSide: Double {
+        return Double(min(drawableWidth, drawableHeight))
     }
     
-    private var aspectRatio: CGFloat {
-        return CGFloat(columnWidth / rowHeight)
+    private var aspectRatio: Double {
+        return columnWidth / rowHeight
     }
     
     //MARK: Drawing
@@ -43,20 +44,20 @@ import UIKit
     private func setGuides() {
         switch gridType {
         case .squares:
-            columnWidth = Int(smallestSide / 4)
-            rowHeight = Int(smallestSide / 4)
-            numberOfColumns = Int(drawableWidth) / columnWidth
-            numberOfRows = Int(drawableHeight) / rowHeight
+            columnWidth = smallestSide / 8
+            rowHeight = smallestSide / 8
+            numberOfColumns = Int(drawableWidth / columnWidth)
+            numberOfRows = Int(drawableHeight / rowHeight)
         case .triangles:
             numberOfColumns = 3
             numberOfRows = 3
-            columnWidth = Int(drawableWidth) / (numberOfColumns + 1)
-            rowHeight = Int(drawableHeight) / (numberOfRows + 1)
+            columnWidth = drawableWidth / Double((numberOfColumns + 1))
+            rowHeight = drawableHeight / Double((numberOfRows + 1))
         case .smallTriangles:
-            numberOfColumns = 6
-            numberOfRows = 6
-            columnWidth = Int(drawableWidth) / (numberOfColumns + 1)
-            rowHeight = Int(drawableHeight) / (numberOfRows + 1)
+            numberOfColumns = 7
+            numberOfRows = 7
+            columnWidth = drawableWidth / Double((numberOfColumns + 1))
+            rowHeight = drawableHeight / Double((numberOfRows + 1))
         case .none:
             numberOfColumns = 0
             numberOfRows = 0
@@ -79,82 +80,76 @@ import UIKit
             drawDownwardLines(on: context)
             drawUpwardLines(on: context)
         }
+        
+        context.strokePath()
     }
     
     //MARK: Line Calculations
     private func drawVerticalLines(on context: CGContext) {
-        for i in 0...numberOfColumns + 1 {
-            var startPoint = CGPoint.zero
-            var endPoint = CGPoint.zero
-            startPoint.x = CGFloat(columnWidth * i) + (lineWidth / 2)
-            startPoint.y = 0.0
-            endPoint.x = startPoint.x
-            endPoint.y = drawableHeight
-            context.move(to: CGPoint(x: startPoint.x, y: startPoint.y))
-            context.addLine(to: CGPoint(x: endPoint.x, y: endPoint.y))
-            context.strokePath()
+        let centerX = drawableWidth/2
+        for i in 0...(numberOfColumns + 1)/2 {
+            let verticalCooridinateTop = CGFloat(centerX - columnWidth * Double(i))
+            let startPointTop = CGPoint(x: verticalCooridinateTop, y: 0.0)
+            let endPointTop = CGPoint(x: verticalCooridinateTop, y: CGFloat(drawableHeight))
+            context.move(to: startPointTop)
+            context.addLine(to: endPointTop)
+            
+            let verticalCooridinateBottom = CGFloat(columnWidth * Double(i) + centerX)
+            let startPointBottom = CGPoint(x: verticalCooridinateBottom, y: 0.0)
+            let endPointBottom = CGPoint(x: verticalCooridinateBottom, y: CGFloat(drawableHeight))
+            context.move(to: startPointBottom)
+            context.addLine(to: endPointBottom)
         }
     }
     
     private func drawHorizontalLines(on context: CGContext) {
+        let centerY = drawableHeight/2
         for j in 0...numberOfRows + 1 {
-            var startPoint = CGPoint.zero
-            var endPoint = CGPoint.zero
-            startPoint.x = 0.0
-            startPoint.y = CGFloat(rowHeight * j) + (lineWidth / 2)
-            endPoint.x = drawableWidth
-            endPoint.y = startPoint.y
-            context.move(to: CGPoint(x: startPoint.x, y: startPoint.y))
-            context.addLine(to: CGPoint(x: endPoint.x, y: endPoint.y))
-            context.strokePath()
+            let horizontalCoordinateLeft = CGFloat(centerY - rowHeight * Double(j))
+            let startPointLeft = CGPoint(x: 0.0, y: horizontalCoordinateLeft)
+            let endPointLeft = CGPoint(x: CGFloat(drawableWidth), y: horizontalCoordinateLeft)
+            context.move(to: startPointLeft)
+            context.addLine(to: endPointLeft)
+            
+            let horizontalCoordinateRight = CGFloat(rowHeight * Double(j) + centerY)
+            let startPointRight = CGPoint(x: 0.0, y: horizontalCoordinateRight)
+            let endPointRight = CGPoint(x: CGFloat(drawableWidth), y: horizontalCoordinateRight)
+            context.move(to: startPointRight)
+            context.addLine(to: endPointRight)
         }
     }
     
     private func drawDownwardLines(on context: CGContext) {
         for i in 0...numberOfColumns + 1 {
-            var leftStartPoint = CGPoint.zero
-            var leftEndPoint = CGPoint.zero
-            leftStartPoint.x = CGFloat(columnWidth * i) + (lineWidth / 2)
-            leftStartPoint.y = 0.0
-            leftEndPoint.x = drawableWidth
-            leftEndPoint.y = drawableHeight - CGFloat(rowHeight * i)
-            context.move(to: CGPoint(x: leftStartPoint.x, y: leftStartPoint.y))
-            context.addLine(to: CGPoint(x: leftEndPoint.x, y: leftEndPoint.y))
+            let leftStartX = CGFloat(columnWidth * Double(i))
+            let leftStartPoint = CGPoint(x: leftStartX, y: 0.0)
+            let leftEndY = CGFloat(drawableHeight - rowHeight * Double(i))
+            let leftEndPoint = CGPoint(x: CGFloat(drawableWidth), y: leftEndY)
+            context.move(to: leftStartPoint)
+            context.addLine(to: leftEndPoint)
             
-            var rightStartPoint = CGPoint.zero
-            var rightEndPoint = CGPoint.zero
-            rightStartPoint.x = drawableWidth - CGFloat(columnWidth * i)
-            rightStartPoint.y = 0.0
-            rightEndPoint.x = 0.0
-            rightEndPoint.y = drawableHeight - CGFloat((rowHeight * i))
-            context.move(to: CGPoint(x: rightStartPoint.x, y: rightStartPoint.y))
-            context.addLine(to: CGPoint(x: rightEndPoint.x, y: rightEndPoint.y))
-            
-            context.strokePath()
+            let rightStartX = CGFloat(drawableWidth - columnWidth * Double(i))
+            let rightStartPoint = CGPoint(x: rightStartX, y: 0.0)
+            let rightEndY = CGFloat(drawableHeight - (rowHeight * Double(i)))
+            let rightEndPoint = CGPoint(x: 0.0, y: rightEndY)
+            context.move(to: rightStartPoint)
+            context.addLine(to: rightEndPoint)
         }
     }
     
     private func drawUpwardLines(on context: CGContext) {
         for j in 1...numberOfRows + 1 {
-            var leftStartPoint = CGPoint.zero
-            var leftEndPoint = CGPoint.zero
-            leftStartPoint.x = 0.0
-            leftStartPoint.y = CGFloat(rowHeight * j) + (lineWidth / 2)
-            leftEndPoint.x = drawableWidth - CGFloat(columnWidth * j)
-            leftEndPoint.y = drawableHeight
-            context.move(to: CGPoint(x: leftStartPoint.x, y: leftStartPoint.y))
-            context.addLine(to: CGPoint(x: leftEndPoint.x, y: leftEndPoint.y))
-            
-            var rightStartPoint = CGPoint.zero
-            var rightEndPoint = CGPoint.zero
-            rightStartPoint.x = drawableWidth
-            rightStartPoint.y = CGFloat(rowHeight * j)
-            rightEndPoint.x = CGFloat(columnWidth * j)
-            rightEndPoint.y = drawableHeight
-            context.move(to: CGPoint(x: rightStartPoint.x, y: rightStartPoint.y))
-            context.addLine(to: CGPoint(x: rightEndPoint.x, y: rightEndPoint.y))
-            
-            context.strokePath()
+            let leftStartY = CGFloat(rowHeight * Double(j)) + (lineWidth / 2)
+            let leftStartPoint = CGPoint(x: 0.0, y: leftStartY)
+            let leftEndX = CGFloat(drawableWidth - columnWidth * Double(j))
+            let leftEndPoint = CGPoint(x: leftEndX, y: CGFloat(drawableHeight))
+            context.move(to: leftStartPoint)
+            context.addLine(to: leftEndPoint)
+
+            let rightStartPoint = CGPoint(x: CGFloat(drawableWidth), y: CGFloat(rowHeight * Double(j)))
+            let rightEndPoint = CGPoint(x: CGFloat(columnWidth * Double(j)), y: CGFloat(drawableHeight))
+            context.move(to: rightStartPoint)
+            context.addLine(to: rightEndPoint)
         }
     }
     

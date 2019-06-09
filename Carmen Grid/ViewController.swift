@@ -325,6 +325,20 @@ extension Delegates: UINavigationControllerDelegate, UIImagePickerControllerDele
         return photoView
     }
     
+    func scrollViewDidChangeAdjustedContentInset(_ scrollView: UIScrollView) {
+        print("content inset changed")
+    }
+    
+    func scrollViewDidZoom(_ scrollView: UIScrollView) {
+        print("Did zoom:")
+        print(photoView.frame)
+    }
+    
+    func scrollViewWillBeginZooming(_ scrollView: UIScrollView, with view: UIView?) {
+        print("Will zoom:")
+        print(photoView.frame)
+    }
+    
     func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info:  [UIImagePickerController.InfoKey : Any]) {
         picker.dismiss(animated: true) { [weak self] in
             guard let strongSelf = self else { return }
