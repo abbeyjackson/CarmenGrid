@@ -1,0 +1,5 @@
+${PODS_ROOT}/Target Support Files/Pods-Carmen Grid/Pods-Carmen Grid-frameworks.sh
+${PODS_ROOT}/Instabug/Instabug.framework
+${PODS_ROOT}/Instabug/Instabug.framework.dSYM
+${PODS_ROOT}/Instabug/InstabugCore.framework
+${PODS_ROOT}/Instabug/InstabugCore.framework.dSYM
