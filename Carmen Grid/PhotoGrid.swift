@@ -175,8 +175,8 @@ extension PublicAPI {
         completion(lineColor)
     }
     
-    func set(type: GridType?, color: GridColor?) {
-        self.gridType = type ?? .none
+    func set(type: GridType, color: GridColor? = nil) {
+        self.gridType = type
         self.lineColor = color ?? .white
         self.updateVisible()
     }

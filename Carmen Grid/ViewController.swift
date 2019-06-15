@@ -113,8 +113,8 @@ extension PhotoSetUp {
         let okAction = UIAlertAction(title: "Ok", style: .cancel, handler: nil)
         alert.addAction(okAction)
         alert.view.isHidden = true
-        self.present(alert, animated: false) {
-            alert.view.transform = self.photoView.transform
+        present(alert, animated: false) {
+            alert.view.transform = self.photoButton.transform
             alert.view.isHidden = false
         }
     }
@@ -165,7 +165,7 @@ extension PhotoSetUp {
         if let gridTypeInt = photo?.detail.gridType, let gridType = PhotoGrid.GridType(rawValue: gridTypeInt), let gridColorInt = photo?.detail.gridColor, let gridColor = PhotoGrid.GridColor(rawValue: gridColorInt) {
             self.gridView?.set(type: gridType, color: gridColor)
         } else {
-            gridView?.set(type: .none, color: .white)
+            gridView?.set(type: .none)
         }
     }
 }
@@ -192,11 +192,11 @@ extension ViewSetUp {
             button.imageView?.contentMode = .scaleAspectFit
         }
         
-        let addPhotoGesture = UITapGestureRecognizer(target: self, action: Selector("photoTapped"))
+        let addPhotoGesture = UITapGestureRecognizer(target: self, action: #selector(photoTapped))
         addPhotoGesture.numberOfTapsRequired = 1
         photoButton.addGestureRecognizer(addPhotoGesture)
         
-        let clearGesture = UILongPressGestureRecognizer(target: self, action: Selector("clearPhotos"))
+        let clearGesture = UILongPressGestureRecognizer(target: self, action: #selector(clearPhotos(gesture:)))
         photoButton.addGestureRecognizer(clearGesture)
     }
     
@@ -250,7 +250,10 @@ extension Visibility {
     }
     
     func setVisibilityForGrid() {
-        guard let photo = loadedPhotos[safe: visibleIndex], let gridType = PhotoGrid.GridType(rawValue: photo.detail.gridType), let gridColor = PhotoGrid.GridColor(rawValue: photo.detail.gridColor) else { return }
+        guard let photo = loadedPhotos[safe: visibleIndex], let gridType = PhotoGrid.GridType(rawValue: photo.detail.gridType), let gridColor = PhotoGrid.GridColor(rawValue: photo.detail.gridColor) else {
+            gridView?.set(type: .none)
+            return
+        }
         gridView?.set(type: gridType, color: gridColor)
     }
 }
@@ -268,19 +271,21 @@ extension ButtonActions {
             let okAction = UIAlertAction(title: "Ok", style: .cancel, handler: nil)
             alert.addAction(okAction)
             alert.view.isHidden = true
-            self.present(alert, animated: false) {
-                alert.view.transform = self.photoView.transform
+            present(alert, animated: false) {
+                alert.view.transform = self.photoButton.transform
                 alert.view.isHidden = false
             }
             return
         }
         
-        self.present(imagePickerController, animated: true, completion: nil)
+        present(imagePickerController, animated: true, completion: nil)
     }
     
-    @objc func clearPhotos() {
+    @objc func clearPhotos(gesture: UIGestureRecognizer) {
+        guard gesture.state == .began else { return }
         let alert = UIAlertController(title: "Clear All Photos", message: "Are you sure you want to clear all photos?", preferredStyle: .alert)
         let yesAction = UIAlertAction(title: "Clear All Photos", style: .destructive) { _ in
+            alert.view.isHidden = true
             self.photoView.image = nil
             self.deleteAllPhotos()
             self.loadedPhotos.removeAll()
@@ -291,15 +296,13 @@ extension ButtonActions {
             self.instructionLabel.transform = self.photoView.transform
             self.instructionLabel.isHidden = false
         }
-        let cancelAction = UIAlertAction(title: "Cancel", style: .cancel) { _ in
-            alert.dismiss(animated: true, completion: nil)
-        }
+        let cancelAction = UIAlertAction(title: "Cancel", style: .cancel, handler: nil)
         alert.addAction(yesAction)
         alert.addAction(cancelAction)
         alert.view.isHidden = true
         alert.view.transform = self.photoParentView.transform
-        self.present(alert, animated: false) {
-            alert.view.transform = self.photoView.transform
+        present(alert, animated: false) {
+            alert.view.transform = self.photoButton.transform
             alert.view.isHidden = false
         }
     }
@@ -351,8 +354,8 @@ extension ButtonActions {
                 let okAction = UIAlertAction(title: "Ok", style: .cancel, handler: nil)
                 alert.addAction(okAction)
                 alert.view.isHidden = true
-                self.present(alert, animated: false) {
-                    alert.view.transform = self.photoView.transform
+                present(alert, animated: false) {
+                    alert.view.transform = self.photoButton.transform
                     alert.view.isHidden = false
                 }
             }
@@ -506,8 +509,8 @@ extension Persistance {
             alert.addAction(okAction)
             alert.addAction(cancelAction)
             alert.view.isHidden = true
-            self.present(alert, animated: false) {
-                alert.view.transform = self.photoView.transform
+            present(alert, animated: false) {
+                alert.view.transform = self.photoButton.transform
                 alert.view.isHidden = false
             }
         } else {

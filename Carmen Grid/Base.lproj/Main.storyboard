@@ -141,7 +141,7 @@
                                                 <rect key="frame" x="0.0" y="0.0" width="1040" height="814"/>
                                                 <subviews>
                                                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="center" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="N1K-fX-nwE">
-                                                        <rect key="frame" x="100" y="392.5" width="840" height="29"/>
+                                                        <rect key="frame" x="491.5" y="392.5" width="57" height="29"/>
                                                         <fontDescription key="fontDescription" type="system" pointSize="24"/>
                                                         <color key="textColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                                         <nil key="highlightedColor"/>
@@ -154,12 +154,13 @@
                                                 <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                                 <constraints>
                                                     <constraint firstItem="AWI-bH-KAe" firstAttribute="leading" secondItem="6BM-aT-GXd" secondAttribute="leading" id="7LT-tE-nRG"/>
-                                                    <constraint firstItem="N1K-fX-nwE" firstAttribute="leading" secondItem="6BM-aT-GXd" secondAttribute="leading" constant="100" id="E5A-iS-2Kb"/>
+                                                    <constraint firstItem="N1K-fX-nwE" firstAttribute="leading" relation="greaterThanOrEqual" secondItem="6BM-aT-GXd" secondAttribute="leading" constant="100" id="E5A-iS-2Kb"/>
                                                     <constraint firstAttribute="trailing" secondItem="AWI-bH-KAe" secondAttribute="trailing" id="SZB-AV-2qp"/>
                                                     <constraint firstItem="AWI-bH-KAe" firstAttribute="top" secondItem="6BM-aT-GXd" secondAttribute="top" id="UWD-eW-dnG"/>
                                                     <constraint firstAttribute="bottom" secondItem="AWI-bH-KAe" secondAttribute="bottom" id="Xty-jr-EsB"/>
                                                     <constraint firstItem="N1K-fX-nwE" firstAttribute="centerY" secondItem="6BM-aT-GXd" secondAttribute="centerY" id="qAy-BM-5Fl"/>
-                                                    <constraint firstAttribute="trailing" secondItem="N1K-fX-nwE" secondAttribute="trailing" constant="100" id="wvn-NJ-L2A"/>
+                                                    <constraint firstAttribute="trailing" relation="greaterThanOrEqual" secondItem="N1K-fX-nwE" secondAttribute="trailing" constant="100" id="wvn-NJ-L2A"/>
+                                                    <constraint firstItem="N1K-fX-nwE" firstAttribute="centerX" secondItem="6BM-aT-GXd" secondAttribute="centerX" id="zXu-dz-6yT"/>
                                                 </constraints>
                                             </view>
                                         </subviews>
