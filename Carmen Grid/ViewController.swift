@@ -15,6 +15,7 @@ class ViewController: UIViewController {
     @IBOutlet weak var photoScrollView: UIScrollView!
     @IBOutlet weak var photoParentView: UIView!
     @IBOutlet weak var photoView: UIImageView!
+    @IBOutlet weak var instructionLabel: UILabel!
     
     @IBOutlet weak var lockedLabel: UILabel!
     @IBOutlet weak var buttonsView: UIView!
@@ -38,11 +39,10 @@ class ViewController: UIViewController {
     let displayRotationKey = "displayRotation"
     let numberOfPhotosToStore = 3
     let loadedPhotoPrefix = "loaded-"
-
+    
     override func viewDidLoad() {
         super.viewDidLoad()
-        
-        setUpPhotoLibraryPermissions()
+    
         loadPreviousRotationSettings()
         retrieveSavedPhotos()
         setInitialVisiblePhoto()
@@ -60,10 +60,29 @@ class ViewController: UIViewController {
         }
         deleteStaleImageFiles()
     }
+    
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        showInstructionLabel()
+        setUpPhotoLibraryPermissions()
+    }
 }
 
 typealias PhotoSetUp = ViewController
 extension PhotoSetUp {
+    func showInstructionLabel() {
+        instructionLabel.transform = photoView.transform
+        instructionLabel.isHidden = false
+        instructionLabel.text = """
+        Welcome!
+        
+        To get started tap the photo icon.
+        
+        If you need to clear photos to start
+        over again long press on the photo icon.
+        """
+    }
+    
     func setUpPhotoLibraryPermissions() {
         let status = PHPhotoLibrary.authorizationStatus()
         
@@ -73,10 +92,33 @@ extension PhotoSetUp {
         case .authorized:
             break
         default:
-            let alert = UIAlertController(title: "Uh Oh!", message: "You have denied Carmen Grid access to your photos so you won't be able to load any photos into this app. Please visit your device's permission settings to allow access", preferredStyle: .alert)
-            self.present(alert, animated: true, completion: nil)
+           showPermissionError()
         }
     }
+    
+    func showPermissionError() {
+        instructionLabel.isHidden = false
+        instructionLabel.text = """
+        Uh Oh!
+        
+        You have denied Carmen Grid access to your photos
+        so you won't be able to load any photos into this app.
+        
+        Please visit your device's permission settings to allow access
+        """
+    }
+    
+    func showPermissionAlert() {
+        let alert = UIAlertController(title: "Error", message: "You have denied access to your Photo Library. Please open your device Settings, tap on \"Privacy\" and allow Photos access for Carmen Grid.", preferredStyle: .alert)
+        let okAction = UIAlertAction(title: "Ok", style: .cancel, handler: nil)
+        alert.addAction(okAction)
+        alert.view.isHidden = true
+        self.present(alert, animated: false) {
+            alert.view.transform = self.photoView.transform
+            alert.view.isHidden = false
+        }
+    }
+    
     func loadPreviousRotationSettings() {
         guard let rotationString = UserDefaults.standard.string(forKey: displayRotationKey),
             let rotation = DisplayRotation(rawValue: rotationString)  else {
@@ -111,6 +153,7 @@ extension PhotoSetUp {
             visibleIndex = 0
             deleteStaleImageFiles()
         }
+        instructionLabel.isHidden = true
     }
     
     func loadInitialGridViewSettings() {
@@ -190,6 +233,7 @@ extension Visibility {
         isPortrait ? setPortraitRotation() : setLandscapeRotation()
         setVisibilityForButtons()
         setVisibilityForGrid()
+        instructionLabel.isHidden = true
     }
     
     func setVisibilityForGrid() {
@@ -213,7 +257,11 @@ extension ButtonActions {
             let alert = UIAlertController(title: "Error", message: "Your device can not display the photo library", preferredStyle: .alert)
             let okAction = UIAlertAction(title: "Ok", style: .cancel, handler: nil)
             alert.addAction(okAction)
-            self.present(alert, animated: true, completion: nil)
+            alert.view.isHidden = true
+            self.present(alert, animated: false) {
+                alert.view.transform = self.photoView.transform
+                alert.view.isHidden = false
+            }
             return
         }
         
@@ -436,7 +484,7 @@ extension Persistance {
             alert.addAction(cancelAction)
             alert.view.isHidden = true
             self.present(alert, animated: false) {
-                alert.view.transform = self.photoParentView.transform
+                alert.view.transform = self.photoView.transform
                 alert.view.isHidden = false
             }
         } else {
