@@ -3,7 +3,7 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 50;
+	objectVersion = 51;
 	objects = {
 
 /* Begin PBXBuildFile section */
@@ -118,7 +118,6 @@
 				02652932724BF8B520128254 /* Pods-Carmen Grid.debug.xcconfig */,
 				FA47A971DBD0C993A24D0C32 /* Pods-Carmen Grid.release.xcconfig */,
 			);
-			name = Pods;
 			path = Pods;
 			sourceTree = "<group>";
 		};
