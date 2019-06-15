@@ -187,6 +187,13 @@ extension ViewSetUp {
             button.tintColor = UIColor.gray
             button.imageView?.contentMode = .scaleAspectFit
         }
+        
+        let addPhotoGesture = UITapGestureRecognizer(target: self, action: Selector("photoTapped"))
+        addPhotoGesture.numberOfTapsRequired = 1
+        photoButton.addGestureRecognizer(addPhotoGesture)
+        
+        let clearGesture = UILongPressGestureRecognizer(target: self, action: Selector("clearPhotos"))
+        photoButton.addGestureRecognizer(clearGesture)
     }
     
     func setUpLockLabel() {
@@ -226,6 +233,7 @@ extension Visibility {
     func refreshVisiblePhoto() {
         guard let loadedPhoto = loadedPhotos[safe: visibleIndex] else {
             photoView.image = nil
+            instructionLabel.isHidden = false
             return
         }
         photoView.image = loadedPhoto.image
@@ -244,12 +252,9 @@ extension Visibility {
 
 typealias ButtonActions = ViewController
 extension ButtonActions {
-    @IBAction func photoTapped(_ sender: UIButton) {
+    @objc func photoTapped() {
         guard PHPhotoLibrary.authorizationStatus() == .authorized else {
-            let alert = UIAlertController(title: "Error", message: "You have denied access to your Photo Library. Please open your device Settings, tap on \"Privacy\" and allow Photos access for Carmen Grid.", preferredStyle: .alert)
-            let okAction = UIAlertAction(title: "Ok", style: .cancel, handler: nil)
-            alert.addAction(okAction)
-            self.present(alert, animated: true, completion: nil)
+            showPermissionAlert()
             return
         }
         
@@ -266,6 +271,32 @@ extension ButtonActions {
         }
         
         self.present(imagePickerController, animated: true, completion: nil)
+    }
+    
+    @objc func clearPhotos() {
+        let alert = UIAlertController(title: "Clear All Photos", message: "Are you sure you want to clear all photos?", preferredStyle: .alert)
+        let yesAction = UIAlertAction(title: "Clear All Photos", style: .destructive) { _ in
+            self.photoView.image = nil
+            self.deleteAllPhotos()
+            self.loadedPhotos.removeAll()
+            self.setVisibilityForButtons()
+            self.setVisibilityForGrid()
+            self.visibleIndex = 0
+            self.updateDefaults()
+            self.instructionLabel.transform = self.photoView.transform
+            self.instructionLabel.isHidden = false
+        }
+        let cancelAction = UIAlertAction(title: "Cancel", style: .cancel) { _ in
+            alert.dismiss(animated: true, completion: nil)
+        }
+        alert.addAction(yesAction)
+        alert.addAction(cancelAction)
+        alert.view.isHidden = true
+        alert.view.transform = self.photoParentView.transform
+        self.present(alert, animated: false) {
+            alert.view.transform = self.photoView.transform
+            alert.view.isHidden = false
+        }
     }
     
     @IBAction func swapTapped(_ sender: UIButton) {
@@ -503,6 +534,11 @@ extension Persistance {
         }
     }
     
+    func deleteStaleImageFiles() {
+        deleteExtraLoadedPhotos()
+        deleteExtraSavedPhotos()
+    }
+    
     func deleteExtraLoadedPhotos() {
         if loadedPhotos.count > numberOfPhotosToStore {
             for index in numberOfPhotosToStore..<loadedPhotos.count {
@@ -517,17 +553,26 @@ extension Persistance {
         }
     }
     
-    func deleteStaleImageFiles() {
-        deleteExtraLoadedPhotos()
-        deleteExtraSavedPhotos()
-    }
-    
     func deleteExtraSavedPhotos() {
         do {
             let existingFilenames = try FileManager.default.contentsOfDirectory(at: defaultsDirectory, includingPropertiesForKeys: nil, options: []).map { $0.lastPathComponent }.filter { $0.contains(loadedPhotoPrefix)}
             let extraFilenames = Set(existingFilenames).subtracting(Set(loadedPhotos.map { $0.detail.filename }))
             guard extraFilenames.count > 0 else { return }
             for filename in extraFilenames {
+                let path = defaultsDirectory.appendingPathComponent(filename)
+                do {
+                    try FileManager.default.removeItem(at: path)
+                } catch {
+                }
+            }
+        } catch {
+        }
+    }
+    
+    func deleteAllPhotos() {
+        do {
+            let existingFilenames = try FileManager.default.contentsOfDirectory(at: defaultsDirectory, includingPropertiesForKeys: nil, options: []).map { $0.lastPathComponent }.filter { $0.contains(loadedPhotoPrefix)}
+            for filename in existingFilenames {
                 let path = defaultsDirectory.appendingPathComponent(filename)
                 do {
                     try FileManager.default.removeItem(at: path)
