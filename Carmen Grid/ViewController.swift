@@ -317,6 +317,7 @@ extension ButtonActions {
         let yesAction = UIAlertAction(title: "Clear All Photos", style: .destructive) { _ in
             alert.view.isHidden = true
             self.photoView.image = nil
+            self.gridView?.set(type: .none)
             self.deleteAllPhotos()
             self.loadedPhotos.removeAll()
             self.setVisibilityForButtons()
