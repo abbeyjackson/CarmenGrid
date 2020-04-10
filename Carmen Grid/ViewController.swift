@@ -8,7 +8,6 @@
 
 import UIKit
 import Photos
-import Instabug
 
 class ViewController: UIViewController {
     
@@ -86,11 +85,11 @@ extension PhotoSetUp {
     
     func setUpPhotoLibraryPermissions() {
         let status = PHPhotoLibrary.authorizationStatus()
-        Instabug.logInfo("Photo Permission status: \(status)")
+        Log.logInfo("Photo Permission status: \(status)")
         
         switch status {
         case .notDetermined:
-            Instabug.logVerbose("SETUP>> Showing PHPhotoLibrary authorization request")
+            Log.logVerbose("SETUP>> Showing PHPhotoLibrary authorization request")
             PHPhotoLibrary.requestAuthorization { _ in }
         case .authorized:
             break
@@ -100,7 +99,7 @@ extension PhotoSetUp {
     }
     
     func showPermissionError() {
-        Instabug.logVerbose("SETUP>> Showing permission error on instruction label")
+        Log.logVerbose("SETUP>> Showing permission error on instruction label")
         instructionLabel.isHidden = false
         instructionLabel.text = """
         Uh Oh!
@@ -113,7 +112,7 @@ extension PhotoSetUp {
     }
     
     func showPermissionAlert() {
-        Instabug.logVerbose("Showing denied permissions alert")
+        Log.logVerbose("Showing denied permissions alert")
         let alert = UIAlertController(title: "Error", message: "You have denied access to your Photo Library. Please open your device Settings, tap on \"Privacy\" and allow Photos access for Carmen Grid.", preferredStyle: .alert)
         let okAction = UIAlertAction(title: "Ok", style: .cancel, handler: nil)
         alert.addAction(okAction)
@@ -127,11 +126,11 @@ extension PhotoSetUp {
     func loadPreviousRotationSettings() {
         guard let rotationString = UserDefaults.standard.string(forKey: displayRotationKey),
             let rotation = DisplayRotation(rawValue: rotationString)  else {
-                Instabug.logVerbose("SETUP>> Previous rotation settings: none")
+                Log.logVerbose("SETUP>> Previous rotation settings: none")
                 photoParentView.transform = DisplayRotation.landscape.transform
                 return
         }
-        Instabug.logInfo("SETUP>> Previous rotation settings: \(rotationString)")
+        Log.logInfo("SETUP>> Previous rotation settings: \(rotationString)")
         switch rotation {
         case .portrait: setPortraitRotation()
         case .landscape: setLandscapeRotation()
@@ -141,11 +140,11 @@ extension PhotoSetUp {
     func retrieveSavedPhotos() {
         let decoder = JSONDecoder()
         guard let detailsData = UserDefaults.standard.array(forKey: loadedPhotosKey) as? [Data], !detailsData.isEmpty else {
-            Instabug.logInfo("SETUP>> Number of previously saved photos: none")
+            Log.logInfo("SETUP>> Number of previously saved photos: none")
             setLandscapeRotation()
             return
         }
-        Instabug.logInfo("SETUP>> Number of previously saved photos: \(detailsData.count)")
+        Log.logInfo("SETUP>> Number of previously saved photos: \(detailsData.count)")
         for detailData in detailsData {
             if let detail = try? decoder.decode(PhotoDetail.self, from: detailData) {
                 let path = defaultsDirectory.appendingPathComponent(detail.filename)
@@ -153,10 +152,10 @@ extension PhotoSetUp {
                     let loadedPhoto = LoadedPhoto(image: image, detail: detail)
                     loadedPhotos.append(loadedPhoto)
                 } else {
-                    Instabug.logError("SETUP>> Failed retrieving previously saved photo at: \(path)")
+                    Log.logError("SETUP>> Failed retrieving previously saved photo at: \(path)")
                 }
             } else {
-                Instabug.logError("SETUP>> Failed decoding of previously saved photo details data")
+                Log.logError("SETUP>> Failed decoding of previously saved photo details data")
             }
         }
         loadedPhotos.sortByTimestamp()
@@ -164,8 +163,8 @@ extension PhotoSetUp {
     
     func setInitialVisiblePhoto() {
         visibleIndex = UserDefaults.standard.integer(forKey: visibleIndexKey)
-        Instabug.logVerbose("SETUP>> Number of photos to store: \(numberOfPhotosToStore)")
-        Instabug.logVerbose("SETUP>> Previously saved visible index: \(visibleIndex)")
+        Log.logVerbose("SETUP>> Number of photos to store: \(numberOfPhotosToStore)")
+        Log.logVerbose("SETUP>> Previously saved visible index: \(visibleIndex)")
         if visibleIndex >= numberOfPhotosToStore {
             visibleIndex = 0
             deleteStaleImageFiles()
@@ -175,7 +174,7 @@ extension PhotoSetUp {
     
     func loadInitialGridViewSettings() {
         guard let gridView = gridView else {
-            Instabug.logInfo("SETUP>> Initial grid: none")
+            Log.logInfo("SETUP>> Initial grid: none")
             return
         }
         let photo = loadedPhotos[safe: visibleIndex]
@@ -187,7 +186,7 @@ extension PhotoSetUp {
         } else {
             gridView.set(type: .none)
         }
-        Instabug.logInfo("SETUP>> Initial grid: \(gridView.gridType), and color: \(gridView.lineColor)")
+        Log.logInfo("SETUP>> Initial grid: \(gridView.gridType), and color: \(gridView.lineColor)")
     }
 }
 
@@ -258,12 +257,12 @@ extension Visibility {
     func refreshVisiblePhoto() {
         photoScrollView.zoomScale = 1.0
         guard let loadedPhoto = loadedPhotos[safe: visibleIndex] else {
-            Instabug.logVerbose("No photo at visible index: \(visibleIndex), loadPhotos count: \(loadedPhotos.count)")
+            Log.logVerbose("No photo at visible index: \(visibleIndex), loadPhotos count: \(loadedPhotos.count)")
             photoView.image = nil
             instructionLabel.isHidden = false
             return
         }
-        Instabug.logVerbose("Visible index: \(visibleIndex), loadPhotos count: \(loadedPhotos.count)")
+        Log.logVerbose("Visible index: \(visibleIndex), loadPhotos count: \(loadedPhotos.count)")
         photoView.image = loadedPhoto.image
         let isPortrait = photoView.transform == DisplayRotation.portrait.transform
         isPortrait ? setPortraitRotation() : setLandscapeRotation()
@@ -277,10 +276,10 @@ extension Visibility {
             let gridView = gridView,
             let gridType = PhotoGrid.GridType(rawValue: photo.detail.gridType),
             let gridColor = PhotoGrid.GridColor(rawValue: photo.detail.gridColor) else {
-                Instabug.logInfo("Grid: No grid present")
+                Log.logInfo("Grid: No grid present")
                 return
         }
-        Instabug.logInfo("Grid: \(gridView.gridType), and color: \(gridView.lineColor)")
+        Log.logInfo("Grid: \(gridView.gridType), and color: \(gridView.lineColor)")
         gridView.set(type: gridType, color: gridColor)
     }
 }
@@ -288,14 +287,14 @@ extension Visibility {
 typealias ButtonActions = ViewController
 extension ButtonActions {
     @objc func photoTapped() {
-        Instabug.logUserEvent(withName: "User adding photo")
+        Log.logUserEvent("User adding photo")
         guard PHPhotoLibrary.authorizationStatus() == .authorized else {
             showPermissionAlert()
             return
         }
         
         guard UIImagePickerController.isSourceTypeAvailable(.photoLibrary) else {
-            Instabug.logError("Device can not display photo library")
+            Log.logError("Device can not display photo library")
             let alert = UIAlertController(title: "Error", message: "Your device can not display the photo library", preferredStyle: .alert)
             let okAction = UIAlertAction(title: "Ok", style: .cancel, handler: nil)
             alert.addAction(okAction)
@@ -312,7 +311,7 @@ extension ButtonActions {
     
     @objc func clearPhotos(gesture: UIGestureRecognizer) {
         guard gesture.state == .began else { return }
-        Instabug.logUserEvent(withName: "User clearing photos")
+        Log.logUserEvent("User clearing photos")
         let alert = UIAlertController(title: "Clear All Photos", message: "Are you sure you want to clear all photos?", preferredStyle: .alert)
         let yesAction = UIAlertAction(title: "Clear All Photos", style: .destructive) { _ in
             alert.view.isHidden = true
@@ -328,7 +327,7 @@ extension ButtonActions {
             self.instructionLabel.isHidden = false
         }
         let cancelAction = UIAlertAction(title: "Cancel", style: .cancel) { _ in
-            Instabug.logVerbose("User cancelled clearing photos")
+            Log.logVerbose("User cancelled clearing photos")
         }
         alert.addAction(yesAction)
         alert.addAction(cancelAction)
@@ -341,7 +340,7 @@ extension ButtonActions {
     }
     
     @IBAction func swapTapped(_ sender: UIButton) {
-        Instabug.logUserEvent(withName: "User swapping photos")
+        Log.logUserEvent("User swapping photos")
         visibleIndex = (visibleIndex + 1) == loadedPhotos.count ? 0 : (visibleIndex + 1)
         refreshVisiblePhoto()
         updateDefaults()
@@ -349,7 +348,7 @@ extension ButtonActions {
     
     @IBAction func lockTapped(_ sender: UIButton) {
         let showButtons = buttonsView.isHidden
-        Instabug.logUserEvent(withName: (showButtons ? "User unlocking screen" : "User locking screen"))
+        Log.logUserEvent((showButtons ? "User unlocking screen" : "User locking screen"))
         lockedLabel.isHidden = showButtons
         buttonsView.isUserInteractionEnabled = showButtons
         buttonsView.isHidden = !showButtons
@@ -358,22 +357,22 @@ extension ButtonActions {
     }
     
     @IBAction func paletteTapped(_ sender: UIButton) {
-        Instabug.logUserEvent(withName: "User swapping line color")
+        Log.logUserEvent("User swapping line color")
         guard let photo = loadedPhotos[safe: visibleIndex],
         let gridView = gridView else { return }
         gridView.swapLineColor { newGridColor in
-            Instabug.logVerbose("Setting color: \(newGridColor), on photo: \(photo.detail.filename)")
+            Log.logVerbose("Setting color: \(newGridColor), on photo: \(photo.detail.filename)")
             photo.detail.gridColor = newGridColor.rawValue
         }
         updateDefaults()
     }
     
     @IBAction func gridTapped(_ sender: UIButton) {
-        Instabug.logUserEvent(withName: "User swapping grid type")
+        Log.logUserEvent("User swapping grid type")
         guard let photo = loadedPhotos[safe: visibleIndex] else { return }
         if let gridView = gridView {
             gridView.swapGrid { newGridType in
-                Instabug.logVerbose("Setting type: \(newGridType), on photo: \(photo.detail.filename)")
+                Log.logVerbose("Setting type: \(newGridType), on photo: \(photo.detail.filename)")
                 photo.detail.gridType = newGridType.rawValue
             }
         } else {
@@ -386,12 +385,12 @@ extension ButtonActions {
     }
     
     @IBAction func rotateTapped(_ sender: UIButton) {
-        Instabug.logUserEvent(withName: "User rotating photo")
+        Log.logUserEvent("User rotating photo")
         guard !loadedPhotos.isEmpty else {
             if PHPhotoLibrary.authorizationStatus() != .authorized {
                 showPermissionAlert()
             } else {
-                Instabug.logVerbose("Showing no photos alert")
+                Log.logVerbose("Showing no photos alert")
                 let alert = UIAlertController(title: "You've got no photos", message: "Please tap the photo icon to add your first photo!", preferredStyle: .alert)
                 let okAction = UIAlertAction(title: "Ok", style: .cancel, handler: nil)
                 alert.addAction(okAction)
@@ -413,7 +412,7 @@ extension ButtonActions {
             rotation = DisplayRotation.landscape
         }
         
-        Instabug.logInfo("New rotation: \(rotation.rawValue)")
+        Log.logInfo("New rotation: \(rotation.rawValue)")
         updateDefaults(new: rotation)
     }
 }
@@ -424,7 +423,7 @@ extension Scaling {
         let widthScale = photoParentView.bounds.size.width / size.width
         let heightScale = photoParentView.bounds.size.height / size.height
         let scale = min(widthScale, heightScale)
-        Instabug.logVerbose("Scale is: \(scale)")
+        Log.logVerbose("Scale is: \(scale)")
         return scale
     }
     
@@ -435,7 +434,7 @@ extension Scaling {
         let yValue = (photoParentView.frame.height - scaledHeight) / 2
         
         let scaledSize = CGRect(x: xValue, y: yValue, width: scaledWidth, height: scaledHeight)
-        Instabug.logVerbose("Scaled size: \(size), to landscape: \(scaledSize)")
+        Log.logVerbose("Scaled size: \(size), to landscape: \(scaledSize)")
         return scaledSize
     }
     
@@ -453,7 +452,7 @@ extension Scaling {
         let yValue = (photoParentView.bounds.height - newHeight) / 2
         
         let scaledSize = CGRect(x: xValue, y: yValue, width: newWidth, height: newHeight)
-        Instabug.logVerbose("Scaled size: \(size), to portrait: \(scaledSize)")
+        Log.logVerbose("Scaled size: \(size), to portrait: \(scaledSize)")
         return scaledSize
     }
 }
@@ -481,7 +480,7 @@ extension Delegates: UINavigationControllerDelegate, UIImagePickerControllerDele
                 image = editedImage
             }
 
-            Instabug.logInfo("User selected photo: \(formattedFilename)")
+            Log.logInfo("User selected photo: \(formattedFilename)")
             let photoDetail = PhotoDetail(filename: formattedFilename, timestamp: Date().timeIntervalSince1970)
             let loadedPhoto = LoadedPhoto(image: image, detail: photoDetail)
             strongSelf.addNew(loadedPhoto)
@@ -493,7 +492,7 @@ extension Delegates: UINavigationControllerDelegate, UIImagePickerControllerDele
 typealias Grid = ViewController
 extension Grid {
     func addGridView() {
-        Instabug.logInfo("Adding grid view")
+        Log.logInfo("Adding grid view")
         gridView = PhotoGrid()
         if let gridView = gridView {
             gridView.backgroundColor = UIColor.clear
@@ -507,7 +506,7 @@ extension Grid {
 typealias Rotation = ViewController
 extension Rotation {
     func setPortraitRotation() {
-        Instabug.logInfo("New Rotation: portrait")
+        Log.logInfo("New Rotation: portrait")
         photoScrollView.zoomScale = 1.0
         buttons.forEach { $0.transform = DisplayRotation.portrait.transform }
         photoView.transform = DisplayRotation.portrait.transform
@@ -519,7 +518,7 @@ extension Rotation {
     }
     
     func setLandscapeRotation() {
-        Instabug.logInfo("New Rotation: landscape")
+        Log.logInfo("New Rotation: landscape")
         photoScrollView.zoomScale = 1.0
         buttons.forEach { $0.transform = DisplayRotation.landscape.transform }
         photoView.transform = DisplayRotation.landscape.transform
@@ -550,7 +549,7 @@ extension Persistance {
             visibleIndex = 0
             success(true)
         } else if loadedPhotos.count == numberOfPhotosToStore {
-            Instabug.logInfo("Showing user max number of photos alert")
+            Log.logInfo("Showing user max number of photos alert")
             let alert = UIAlertController(title: "Warning", message: "You have \(numberOfPhotosToStore) photos loaded already. Replace current photo?", preferredStyle: .alert)
             let okAction = UIAlertAction(title: "Replace Current", style: .destructive) { _ in
                 self.loadedPhotos[self.visibleIndex] = photo
@@ -567,7 +566,7 @@ extension Persistance {
                 alert.view.isHidden = false
             }
         } else {
-            Instabug.logInfo("Inserting photo at visibleIndex: \(visibleIndex)")
+            Log.logInfo("Inserting photo at visibleIndex: \(visibleIndex)")
             loadedPhotos.insert(photo, at: visibleIndex)
             success(true)
         }
@@ -579,7 +578,7 @@ extension Persistance {
         do {
             try imageData.write(to: savePath)
         } catch {
-            Instabug.logError("Failed writing image data to path: \(savePath.path)")
+            Log.logError("Failed writing image data to path: \(savePath.path)")
         }
     }
     
@@ -590,16 +589,16 @@ extension Persistance {
     
     func deleteExtraLoadedPhotos() {
         if loadedPhotos.count > numberOfPhotosToStore {
-            Instabug.logVerbose("Extra loaded photos count: \(loadedPhotos.count - numberOfPhotosToStore)")
+            Log.logVerbose("Extra loaded photos count: \(loadedPhotos.count - numberOfPhotosToStore)")
             for index in numberOfPhotosToStore..<loadedPhotos.count {
-                Instabug.logVerbose("Deleting photo at index: \(index)")
+                Log.logVerbose("Deleting photo at index: \(index)")
                 let photoToDelete = loadedPhotos[index]
                 let deletePath = defaultsDirectory.appendingPathComponent(photoToDelete.detail.filename)
                 do {
                     try FileManager.default.removeItem(at: deletePath)
                     loadedPhotos.remove(at: index)
                 } catch {
-                    Instabug.logError("Failed to remove image at path: \(deletePath.path)")
+                    Log.logError("Failed to remove image at path: \(deletePath.path)")
                 }
             }
         }
@@ -610,34 +609,34 @@ extension Persistance {
             let existingFilenames = try FileManager.default.contentsOfDirectory(at: defaultsDirectory, includingPropertiesForKeys: nil, options: []).map { $0.lastPathComponent }.filter { $0.contains(loadedPhotoPrefix)}
             let extraFilenames = Set(existingFilenames).subtracting(Set(loadedPhotos.map { $0.detail.filename }))
             guard !extraFilenames.isEmpty else { return }
-            Instabug.logVerbose("Extra saved filenames count: \(extraFilenames)")
+            Log.logVerbose("Extra saved filenames count: \(extraFilenames)")
             for filename in extraFilenames {
                 let path = defaultsDirectory.appendingPathComponent(filename)
                 do {
                     try FileManager.default.removeItem(at: path)
                 } catch {
-                    Instabug.logError("Removing image data failed at path: \(path.path)")
+                    Log.logError("Removing image data failed at path: \(path.path)")
                 }
             }
         } catch {
-            Instabug.logError("Failed to get contents of defaults directory: \(defaultsDirectory.path)")
+            Log.logError("Failed to get contents of defaults directory: \(defaultsDirectory.path)")
         }
     }
     
     func deleteAllPhotos() {
         do {
             let existingFilenames = try FileManager.default.contentsOfDirectory(at: defaultsDirectory, includingPropertiesForKeys: nil, options: []).map { $0.lastPathComponent }.filter { $0.contains(loadedPhotoPrefix)}
-            Instabug.logVerbose("Existing filenames count: \(existingFilenames)")
+            Log.logVerbose("Existing filenames count: \(existingFilenames)")
             for filename in existingFilenames {
                 let path = defaultsDirectory.appendingPathComponent(filename)
                 do {
                     try FileManager.default.removeItem(at: path)
                 } catch {
-                    Instabug.logError("Removing image data failed at path: \(path.path)")
+                    Log.logError("Removing image data failed at path: \(path.path)")
                 }
             }
         } catch {
-            Instabug.logError("Failed to get contents of defaults directory: \(defaultsDirectory.path)")
+            Log.logError("Failed to get contents of defaults directory: \(defaultsDirectory.path)")
         }
     }
     
@@ -649,6 +648,6 @@ extension Persistance {
         if let rotation = rotation {
             UserDefaults.standard.set(rotation.rawValue, forKey: displayRotationKey)
         }
-        Instabug.logInfo("Updating user defaults>> visibleIndex: \(visibleIndex), rotation: \(rotation?.rawValue ?? "none"), photos count: \(details.count)")
+        Log.logInfo("Updating user defaults>> visibleIndex: \(visibleIndex), rotation: \(rotation?.rawValue ?? "none"), photos count: \(details.count)")
     }
 }

@@ -3,7 +3,7 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 51;
+	objectVersion = 50;
 	objects = {
 
 /* Begin PBXBuildFile section */
@@ -19,11 +19,10 @@
 		535EBFE4225DBB0900AF943D /* PhotoGridEnums.swift in Sources */ = {isa = PBXBuildFile; fileRef = 535EBFD5225DBB0900AF943D /* PhotoGridEnums.swift */; };
 		535EBFE5225DBB0900AF943D /* DisplayRotation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 535EBFD6225DBB0900AF943D /* DisplayRotation.swift */; };
 		535EBFE6225DBB0900AF943D /* ArrayExtensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 535EBFD7225DBB0900AF943D /* ArrayExtensions.swift */; };
-		CC96C07F7A49EBF8C20B61B1 /* Pods_Carmen_Grid.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A3545D38AE5FE8F6864878EB /* Pods_Carmen_Grid.framework */; };
+		5392FC33233E98A300F46CB2 /* Log.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5392FC32233E98A300F46CB2 /* Log.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
-		02652932724BF8B520128254 /* Pods-Carmen Grid.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Carmen Grid.debug.xcconfig"; path = "Target Support Files/Pods-Carmen Grid/Pods-Carmen Grid.debug.xcconfig"; sourceTree = "<group>"; };
 		535EBFC5225DBB0800AF943D /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
 		535EBFC6225DBB0800AF943D /* PhotoDetail.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PhotoDetail.swift; sourceTree = "<group>"; };
 		535EBFC7225DBB0800AF943D /* TransparentView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TransparentView.swift; sourceTree = "<group>"; };
@@ -39,9 +38,8 @@
 		535EBFD5225DBB0900AF943D /* PhotoGridEnums.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PhotoGridEnums.swift; sourceTree = "<group>"; };
 		535EBFD6225DBB0900AF943D /* DisplayRotation.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DisplayRotation.swift; sourceTree = "<group>"; };
 		535EBFD7225DBB0900AF943D /* ArrayExtensions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ArrayExtensions.swift; sourceTree = "<group>"; };
+		5392FC32233E98A300F46CB2 /* Log.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Log.swift; sourceTree = "<group>"; };
 		53DD3272224AE46500676BBE /* Carmen Grid.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Carmen Grid.app"; sourceTree = BUILT_PRODUCTS_DIR; };
-		A3545D38AE5FE8F6864878EB /* Pods_Carmen_Grid.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Carmen_Grid.framework; sourceTree = BUILT_PRODUCTS_DIR; };
-		FA47A971DBD0C993A24D0C32 /* Pods-Carmen Grid.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Carmen Grid.release.xcconfig"; path = "Target Support Files/Pods-Carmen Grid/Pods-Carmen Grid.release.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -49,7 +47,6 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				CC96C07F7A49EBF8C20B61B1 /* Pods_Carmen_Grid.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -73,6 +70,7 @@
 				535EBFD5225DBB0900AF943D /* PhotoGridEnums.swift */,
 				535EBFC7225DBB0800AF943D /* TransparentView.swift */,
 				535EBFC9225DBB0800AF943D /* ViewController.swift */,
+				5392FC32233E98A300F46CB2 /* Log.swift */,
 			);
 			path = "Carmen Grid";
 			sourceTree = SOURCE_ROOT;
@@ -92,7 +90,6 @@
 				535EBFAF225DBA5C00AF943D /* Carmen Grid */,
 				53DD3273224AE46500676BBE /* Products */,
 				A7C34C46F97159281B301C34 /* Pods */,
-				7D6B331F96C6AC0C066CD8AB /* Frameworks */,
 			);
 			sourceTree = "<group>";
 		};
@@ -104,19 +101,9 @@
 			name = Products;
 			sourceTree = "<group>";
 		};
-		7D6B331F96C6AC0C066CD8AB /* Frameworks */ = {
-			isa = PBXGroup;
-			children = (
-				A3545D38AE5FE8F6864878EB /* Pods_Carmen_Grid.framework */,
-			);
-			name = Frameworks;
-			sourceTree = "<group>";
-		};
 		A7C34C46F97159281B301C34 /* Pods */ = {
 			isa = PBXGroup;
 			children = (
-				02652932724BF8B520128254 /* Pods-Carmen Grid.debug.xcconfig */,
-				FA47A971DBD0C993A24D0C32 /* Pods-Carmen Grid.release.xcconfig */,
 			);
 			path = Pods;
 			sourceTree = "<group>";
@@ -128,11 +115,9 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = 53DD3284224AE46C00676BBE /* Build configuration list for PBXNativeTarget "Carmen Grid" */;
 			buildPhases = (
-				E8CC51C439EA76E1F6150990 /* [CP] Check Pods Manifest.lock */,
 				53DD326E224AE46500676BBE /* Sources */,
 				53DD326F224AE46500676BBE /* Frameworks */,
 				53DD3270224AE46500676BBE /* Resources */,
-				996F09D852201D864AE04466 /* [CP] Embed Pods Frameworks */,
 			);
 			buildRules = (
 			);
@@ -190,48 +175,6 @@
 		};
 /* End PBXResourcesBuildPhase section */
 
-/* Begin PBXShellScriptBuildPhase section */
-		996F09D852201D864AE04466 /* [CP] Embed Pods Frameworks */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputFileListPaths = (
-				"${PODS_ROOT}/Target Support Files/Pods-Carmen Grid/Pods-Carmen Grid-frameworks-${CONFIGURATION}-input-files.xcfilelist",
-			);
-			name = "[CP] Embed Pods Frameworks";
-			outputFileListPaths = (
-				"${PODS_ROOT}/Target Support Files/Pods-Carmen Grid/Pods-Carmen Grid-frameworks-${CONFIGURATION}-output-files.xcfilelist",
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-Carmen Grid/Pods-Carmen Grid-frameworks.sh\"\n";
-			showEnvVarsInLog = 0;
-		};
-		E8CC51C439EA76E1F6150990 /* [CP] Check Pods Manifest.lock */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputFileListPaths = (
-			);
-			inputPaths = (
-				"${PODS_PODFILE_DIR_PATH}/Podfile.lock",
-				"${PODS_ROOT}/Manifest.lock",
-			);
-			name = "[CP] Check Pods Manifest.lock";
-			outputFileListPaths = (
-			);
-			outputPaths = (
-				"$(DERIVED_FILE_DIR)/Pods-Carmen Grid-checkManifestLockResult.txt",
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
-			showEnvVarsInLog = 0;
-		};
-/* End PBXShellScriptBuildPhase section */
-
 /* Begin PBXSourcesBuildPhase section */
 		53DD326E224AE46500676BBE /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
@@ -239,6 +182,7 @@
 			files = (
 				535EBFD9225DBB0900AF943D /* PhotoDetail.swift in Sources */,
 				535EBFDB225DBB0900AF943D /* PhotoGrid.swift in Sources */,
+				5392FC33233E98A300F46CB2 /* Log.swift in Sources */,
 				535EBFE3225DBB0900AF943D /* AppDelegate.swift in Sources */,
 				535EBFDF225DBB0900AF943D /* LoadedPhoto.swift in Sources */,
 				535EBFE6225DBB0900AF943D /* ArrayExtensions.swift in Sources */,
@@ -405,7 +349,6 @@
 		};
 		53DD3285224AE46C00676BBE /* Debug */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 02652932724BF8B520128254 /* Pods-Carmen Grid.debug.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
@@ -427,7 +370,6 @@
 		};
 		53DD3286224AE46C00676BBE /* Release */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = FA47A971DBD0C993A24D0C32 /* Pods-Carmen Grid.release.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
