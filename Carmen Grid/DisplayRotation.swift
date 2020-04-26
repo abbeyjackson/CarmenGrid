@@ -20,4 +20,11 @@ enum DisplayRotation: String {
             return CGAffineTransform(rotationAngle: 0)
         }
     }
+    
+    var rotate: DisplayRotation {
+        switch self {
+        case .portrait: return .landscape
+        case .landscape: return .portrait
+        }
+    }
 }

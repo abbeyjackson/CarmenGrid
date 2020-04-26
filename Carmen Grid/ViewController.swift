@@ -39,9 +39,13 @@ class ViewController: UIViewController {
     let displayRotationKey = "displayRotation"
     let numberOfPhotosToStore = 3
     let loadedPhotoPrefix = "loaded-"
+    var rotation: DisplayRotation = .landscape
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        
+        photoView.backgroundColor = .red
+        photoParentView.backgroundColor = .blue
     
         loadPreviousRotationSettings()
         retrieveSavedPhotos()
@@ -53,10 +57,10 @@ class ViewController: UIViewController {
         setUpLockLabel()
         
         DispatchQueue.main.async {
-            self.refreshVisiblePhoto()
-            self.addGridView()
-            self.loadInitialGridViewSettings()
-            self.setVisibilityForButtons()
+            self.refresh()
+//            self.addGridView()
+//            self.loadInitialGridViewSettings()
+//            self.setVisibilityForButtons()
         }
         deleteStaleImageFiles()
     }
@@ -124,24 +128,19 @@ extension PhotoSetUp {
     }
     
     func loadPreviousRotationSettings() {
-        guard let rotationString = UserDefaults.standard.string(forKey: displayRotationKey),
-            let rotation = DisplayRotation(rawValue: rotationString)  else {
+        guard let previousRotationString = UserDefaults.standard.string(forKey: displayRotationKey),
+            let previousRotation = DisplayRotation(rawValue: previousRotationString)  else {
                 Log.logVerbose("SETUP>> Previous rotation settings: none")
-                photoParentView.transform = DisplayRotation.landscape.transform
                 return
         }
-        Log.logInfo("SETUP>> Previous rotation settings: \(rotationString)")
-        switch rotation {
-        case .portrait: setPortraitRotation()
-        case .landscape: setLandscapeRotation()
-        }
+        Log.logInfo("SETUP>> Previous rotation settings: \(previousRotationString)")
+        rotation = previousRotation
     }
     
     func retrieveSavedPhotos() {
         let decoder = JSONDecoder()
         guard let detailsData = UserDefaults.standard.array(forKey: loadedPhotosKey) as? [Data], !detailsData.isEmpty else {
             Log.logInfo("SETUP>> Number of previously saved photos: none")
-            setLandscapeRotation()
             return
         }
         Log.logInfo("SETUP>> Number of previously saved photos: \(detailsData.count)")
@@ -201,6 +200,7 @@ extension ViewSetUp {
         photoScrollView.delegate = self
         photoScrollView.minimumZoomScale = 1
         photoScrollView.maximumZoomScale = 4
+//        photoView.clearsContextBeforeDrawing = false
     }
     
     func setUpButtons() {
@@ -254,8 +254,14 @@ extension Visibility {
         paletteButton.isUserInteractionEnabled = gridVisible
     }
     
-    func refreshVisiblePhoto() {
-        photoScrollView.zoomScale = 1.0
+    func refresh() {
+        reloadVisiblePhoto()
+//        setVisibilityForButtons()
+//        setVisibilityForGrid()
+        instructionLabel.isHidden = true
+    }
+    
+    func reloadVisiblePhoto() {
         guard let loadedPhoto = loadedPhotos[safe: visibleIndex] else {
             Log.logVerbose("No photo at visible index: \(visibleIndex), loadPhotos count: \(loadedPhotos.count)")
             photoView.image = nil
@@ -264,11 +270,8 @@ extension Visibility {
         }
         Log.logVerbose("Visible index: \(visibleIndex), loadPhotos count: \(loadedPhotos.count)")
         photoView.image = loadedPhoto.image
-        let isPortrait = photoView.transform == DisplayRotation.portrait.transform
-        isPortrait ? setPortraitRotation() : setLandscapeRotation()
-        setVisibilityForButtons()
-        setVisibilityForGrid()
-        instructionLabel.isHidden = true
+        
+        setRotation()
     }
     
     func setVisibilityForGrid() {
@@ -342,8 +345,11 @@ extension ButtonActions {
     @IBAction func swapTapped(_ sender: UIButton) {
         Log.logUserEvent("User swapping photos")
         visibleIndex = (visibleIndex + 1) == loadedPhotos.count ? 0 : (visibleIndex + 1)
-        refreshVisiblePhoto()
-        updateDefaults()
+        
+        DispatchQueue.main.async {
+            self.refresh()
+        }
+//        updateDefaults()
     }
     
     @IBAction func lockTapped(_ sender: UIButton) {
@@ -403,17 +409,35 @@ extension ButtonActions {
             return
         }
         
-        var rotation: DisplayRotation
-        if photoView.transform == DisplayRotation.landscape.transform {
-            setPortraitRotation()
-            rotation = DisplayRotation.portrait
-        } else {
-            setLandscapeRotation()
-            rotation = DisplayRotation.landscape
-        }
-        
-        Log.logInfo("New rotation: \(rotation.rawValue)")
+        rotation = rotation.rotate
         updateDefaults(new: rotation)
+        DispatchQueue.main.async {
+            self.setRotation()
+        }
+    }
+}
+
+typealias Rotation = ViewController
+extension Rotation {
+    func setRotation() {
+        Log.logInfo("Set Rotation: \(rotation)")
+        photoScrollView.zoomScale = 1.0
+        imagePickerController.view.transform = rotation.transform
+        buttons.forEach { $0.transform = rotation.transform }
+        photoView.transform = rotation.transform
+        
+        guard let size = photoView.image?.size else { return }
+        Log.logVerbose("size: \(size)")
+        let newFrame = rotation == .landscape ? scaleToLandscape(size) : scaleToPortrait(size)
+        
+        self.photoView.bounds = newFrame
+        DispatchQueue.main.async {
+//            self.photoView.setNeedsDisplay()
+            self.photoView.setNeedsLayout()
+            self.view.layoutIfNeeded()
+        }
+        Log.logInfo("New rotation: \(rotation.rawValue)")
+        
     }
 }
 
@@ -428,17 +452,35 @@ extension Scaling {
     }
     
     func scaleToLandscape(_ size: CGSize) -> CGRect {
-        let scaledWidth = size.width * contentScaleOfPhoto(size: size)
-        let scaledHeight = size.height * contentScaleOfPhoto(size: size)
-        let xValue = (photoParentView.frame.width - scaledWidth) / 2
-        let yValue = (photoParentView.frame.height - scaledHeight) / 2
+        Log.logInfo("scaleToLandscape: \(size)")
+        let scale = size.height / size.width
+        var newWidth = photoParentView.bounds.width
+        var newHeight = newWidth * scale
         
-        let scaledSize = CGRect(x: xValue, y: yValue, width: scaledWidth, height: scaledHeight)
+        if scale >= 1.0 { // Portrait oriented photo
+            newHeight = photoParentView.bounds.height
+            newWidth = newHeight / scale
+        }
+        
+        let xValue = (photoParentView.bounds.width - newWidth) / 2
+        let yValue = (photoParentView.bounds.height - newHeight) / 2
+        
+        let scaledSize = CGRect(x: xValue, y: yValue, width: newWidth, height: newHeight)
         Log.logVerbose("Scaled size: \(size), to landscape: \(scaledSize)")
         return scaledSize
+        
+//        let scaledWidth = size.width * contentScaleOfPhoto(size: size)
+//        let scaledHeight = size.height * contentScaleOfPhoto(size: size)
+//        let xValue = (photoParentView.frame.width - scaledWidth) / 2
+//        let yValue = (photoParentView.frame.height - scaledHeight) / 2
+//
+//        let scaledSize = CGRect(x: xValue, y: yValue, width: scaledWidth, height: scaledHeight)
+//        Log.logVerbose("Scaled size: \(size), to landscape: \(scaledSize)")
+//        return scaledSize
     }
     
     func scaleToPortrait(_ size: CGSize) -> CGRect {
+        Log.logInfo("scaleToPortrait: \(size)")
         let scale = size.height / size.width
         var newWidth = photoParentView.bounds.height
         var newHeight = newWidth * scale
@@ -503,39 +545,12 @@ extension Grid {
     }
 }
 
-typealias Rotation = ViewController
-extension Rotation {
-    func setPortraitRotation() {
-        Log.logInfo("New Rotation: portrait")
-        photoScrollView.zoomScale = 1.0
-        buttons.forEach { $0.transform = DisplayRotation.portrait.transform }
-        photoView.transform = DisplayRotation.portrait.transform
-        guard let size = photoView.image?.size else { return }
-        let newSize = scaleToPortrait(size)
-        photoView.bounds = newSize
-        gridView?.frame = photoView.bounds
-        imagePickerController.view.transform = DisplayRotation.portrait.transform
-    }
-    
-    func setLandscapeRotation() {
-        Log.logInfo("New Rotation: landscape")
-        photoScrollView.zoomScale = 1.0
-        buttons.forEach { $0.transform = DisplayRotation.landscape.transform }
-        photoView.transform = DisplayRotation.landscape.transform
-        guard let size = photoView.image?.size else { return }
-        let newSize = scaleToLandscape(size)
-        photoView.bounds = newSize
-        gridView?.frame = photoView.bounds
-        imagePickerController.view.transform = DisplayRotation.landscape.transform
-    }
-}
-
 typealias Persistance = ViewController
 extension Persistance {
     func addNew(_ photo: LoadedPhoto) {
         loadPhoto(photo) { success in
             guard success else { return }
-            self.refreshVisiblePhoto()
+            self.refresh()
             self.save(photo)
             self.deleteStaleImageFiles()
             self.updateDefaults()
