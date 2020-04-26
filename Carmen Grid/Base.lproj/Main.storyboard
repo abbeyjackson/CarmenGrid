@@ -146,17 +146,19 @@
                                                         <nil key="highlightedColor"/>
                                                     </label>
                                                     <view clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFill" translatesAutoresizingMaskIntoConstraints="NO" id="AWI-bH-KAe" customClass="UIImageView">
-                                                        <rect key="frame" x="0.0" y="0.0" width="1040" height="834"/>
+                                                        <rect key="frame" x="170" y="167" width="700" height="500"/>
                                                         <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                                        <constraints>
+                                                            <constraint firstAttribute="height" constant="500" id="iUq-wf-6LA"/>
+                                                            <constraint firstAttribute="width" constant="700" id="tvN-DN-gdE"/>
+                                                        </constraints>
                                                     </view>
                                                 </subviews>
                                                 <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                                 <constraints>
-                                                    <constraint firstItem="AWI-bH-KAe" firstAttribute="leading" secondItem="6BM-aT-GXd" secondAttribute="leading" id="7LT-tE-nRG"/>
                                                     <constraint firstItem="N1K-fX-nwE" firstAttribute="leading" relation="greaterThanOrEqual" secondItem="6BM-aT-GXd" secondAttribute="leading" constant="100" id="E5A-iS-2Kb"/>
-                                                    <constraint firstAttribute="trailing" secondItem="AWI-bH-KAe" secondAttribute="trailing" id="SZB-AV-2qp"/>
-                                                    <constraint firstItem="AWI-bH-KAe" firstAttribute="top" secondItem="6BM-aT-GXd" secondAttribute="top" id="UWD-eW-dnG"/>
-                                                    <constraint firstAttribute="bottom" secondItem="AWI-bH-KAe" secondAttribute="bottom" id="Xty-jr-EsB"/>
+                                                    <constraint firstItem="AWI-bH-KAe" firstAttribute="centerY" secondItem="6BM-aT-GXd" secondAttribute="centerY" id="XpX-ka-ZRM"/>
+                                                    <constraint firstItem="AWI-bH-KAe" firstAttribute="centerX" secondItem="6BM-aT-GXd" secondAttribute="centerX" id="gIH-m2-iZg"/>
                                                     <constraint firstItem="N1K-fX-nwE" firstAttribute="centerY" secondItem="6BM-aT-GXd" secondAttribute="centerY" id="qAy-BM-5Fl"/>
                                                     <constraint firstAttribute="trailing" relation="greaterThanOrEqual" secondItem="N1K-fX-nwE" secondAttribute="trailing" constant="100" id="wvn-NJ-L2A"/>
                                                     <constraint firstItem="N1K-fX-nwE" firstAttribute="centerX" secondItem="6BM-aT-GXd" secondAttribute="centerX" id="zXu-dz-6yT"/>
@@ -219,6 +221,8 @@
                         <outlet property="photoParentView" destination="6BM-aT-GXd" id="1wC-Z6-V9h"/>
                         <outlet property="photoScrollView" destination="Rvj-st-aHr" id="YEd-77-WlG"/>
                         <outlet property="photoView" destination="AWI-bH-KAe" id="t5T-eJ-XTH"/>
+                        <outlet property="photoViewHeightConstraint" destination="iUq-wf-6LA" id="cbL-Rb-Ww9"/>
+                        <outlet property="photoViewWidthConstraint" destination="tvN-DN-gdE" id="YPt-4g-HyP"/>
                         <outlet property="rotateButton" destination="cxQ-nP-Av9" id="fRR-Xg-MEP"/>
                         <outlet property="scrollParentView" destination="NdZ-ep-bCQ" id="IkT-fM-iCx"/>
                         <outlet property="swapButton" destination="2Vk-nc-mTm" id="7Iy-Ik-AXP"/>
