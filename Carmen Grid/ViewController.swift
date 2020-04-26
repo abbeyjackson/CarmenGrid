@@ -14,7 +14,7 @@ class ViewController: UIViewController {
     @IBOutlet weak var scrollParentView: TransparentView!
     @IBOutlet weak var photoScrollView: UIScrollView!
     @IBOutlet weak var photoParentView: UIView!
-    @IBOutlet weak var photoView: UIImageView!
+    @IBOutlet weak var photoView: PhotoGrid!
     @IBOutlet weak var instructionLabel: UILabel!
     
     @IBOutlet weak var lockedLabel: UILabel!
@@ -30,7 +30,6 @@ class ViewController: UIViewController {
     @IBOutlet weak var photoViewHeightConstraint: NSLayoutConstraint!
     @IBOutlet weak var photoViewWidthConstraint: NSLayoutConstraint!
     
-    var gridView: PhotoGrid?
     var imagePickerController = UIImagePickerController()
     
     var loadedPhotos: [LoadedPhoto] = []
@@ -58,13 +57,12 @@ class ViewController: UIViewController {
             setUpImagePicker()
             setUpPhotoViews()
             self.refresh()
+//            self.addGridView()
+            self.loadInitialGridViewSettings()
+            self.setVisibilityForButtons()
         }
         
-        DispatchQueue.main.async {
-//            self.addGridView()
-//            self.loadInitialGridViewSettings()
-//            self.setVisibilityForButtons()
-        }
+
         deleteStaleImageFiles()
     }
     
@@ -177,20 +175,16 @@ extension PhotoSetUp {
     }
     
     func loadInitialGridViewSettings() {
-        guard let gridView = gridView else {
-            Log.logInfo("SETUP>> Initial grid: none")
-            return
-        }
         let photo = loadedPhotos[safe: visibleIndex]
         if let gridTypeInt = photo?.detail.gridType,
             let gridType = PhotoGrid.GridType(rawValue: gridTypeInt),
             let gridColorInt = photo?.detail.gridColor,
             let gridColor = PhotoGrid.GridColor(rawValue: gridColorInt) {
-            gridView.set(type: gridType, color: gridColor)
+            photoView.set(type: gridType, color: gridColor)
         } else {
-            gridView.set(type: .none)
+            photoView.set(type: .none)
         }
-        Log.logInfo("SETUP>> Initial grid: \(gridView.gridType), and color: \(gridView.lineColor)")
+        Log.logInfo("SETUP>> Initial grid: \(photoView.gridType), and color: \(photoView.lineColor)")
     }
 }
 
@@ -257,7 +251,12 @@ extension Visibility {
     }
     
     func setVisibilityForPaletteButton() {
-        let gridVisible = (gridView != nil) && gridView?.gridType != PhotoGrid.GridType.none
+        guard let photo = loadedPhotos[safe: visibleIndex],
+            let gridType = PhotoGrid.GridType(rawValue: photo.detail.gridType) else {
+                Log.logInfo("No photo loaded")
+                return
+        }
+        let gridVisible = gridType != PhotoGrid.GridType.none
         let paletteAlpha = gridVisible ? 1.0 : 0.0
         paletteButton.alpha = CGFloat(paletteAlpha)
         paletteButton.isUserInteractionEnabled = gridVisible
@@ -265,8 +264,8 @@ extension Visibility {
     
     func refresh() {
         reloadVisiblePhoto()
-//        setVisibilityForButtons()
-//        setVisibilityForGrid()
+        setVisibilityForButtons()
+        setVisibilityForGrid()
         instructionLabel.isHidden = true
     }
     
@@ -285,14 +284,13 @@ extension Visibility {
     
     func setVisibilityForGrid() {
         guard let photo = loadedPhotos[safe: visibleIndex],
-            let gridView = gridView,
             let gridType = PhotoGrid.GridType(rawValue: photo.detail.gridType),
             let gridColor = PhotoGrid.GridColor(rawValue: photo.detail.gridColor) else {
-                Log.logInfo("Grid: No grid present")
+                Log.logInfo("No photo loaded")
                 return
         }
-        Log.logInfo("Grid: \(gridView.gridType), and color: \(gridView.lineColor)")
-        gridView.set(type: gridType, color: gridColor)
+        Log.logInfo("Grid: \(gridType), and color: \(gridColor)")
+        photoView.set(type: gridType, color: gridColor)
     }
 }
 
@@ -328,7 +326,7 @@ extension ButtonActions {
         let yesAction = UIAlertAction(title: "Clear All Photos", style: .destructive) { _ in
             alert.view.isHidden = true
             self.photoView.image = nil
-            self.gridView?.set(type: .none)
+            self.photoView.set(type: .none)
             self.deleteAllPhotos()
             self.loadedPhotos.removeAll()
             self.setVisibilityForButtons()
@@ -354,11 +352,10 @@ extension ButtonActions {
     @IBAction func swapTapped(_ sender: UIButton) {
         Log.logUserEvent("User swapping photos")
         visibleIndex = (visibleIndex + 1) == loadedPhotos.count ? 0 : (visibleIndex + 1)
-        
         DispatchQueue.main.async {
             self.refresh()
         }
-//        updateDefaults()
+        updateDefaults()
     }
     
     @IBAction func lockTapped(_ sender: UIButton) {
@@ -374,8 +371,8 @@ extension ButtonActions {
     @IBAction func paletteTapped(_ sender: UIButton) {
         Log.logUserEvent("User swapping line color")
         guard let photo = loadedPhotos[safe: visibleIndex],
-        let gridView = gridView else { return }
-        gridView.swapLineColor { newGridColor in
+            photo.detail.gridType != 0 else { return }
+        photoView.swapLineColor { newGridColor in
             Log.logVerbose("Setting color: \(newGridColor), on photo: \(photo.detail.filename)")
             photo.detail.gridColor = newGridColor.rawValue
         }
@@ -385,15 +382,11 @@ extension ButtonActions {
     @IBAction func gridTapped(_ sender: UIButton) {
         Log.logUserEvent("User swapping grid type")
         guard let photo = loadedPhotos[safe: visibleIndex] else { return }
-        if let gridView = gridView {
-            gridView.swapGrid { newGridType in
-                Log.logVerbose("Setting type: \(newGridType), on photo: \(photo.detail.filename)")
-                photo.detail.gridType = newGridType.rawValue
-            }
-        } else {
-            addGridView()
-            photo.detail.gridType = 1
-        }
+        
+        photoView.swapGrid { newGridType in
+                       Log.logVerbose("Setting type: \(newGridType), on photo: \(photo.detail.filename)")
+                       photo.detail.gridType = newGridType.rawValue
+                   }
         
         updateDefaults()
         setVisibilityForPaletteButton()
@@ -466,6 +459,7 @@ extension Rotation {
         photoView.transform = rotation.transform
         photoView.layoutIfNeeded()
     }
+    
     func setRotation() {
         Log.logInfo("Set Rotation: \(rotation)")
         photoScrollView.zoomScale = 1.0
@@ -477,65 +471,6 @@ extension Rotation {
             setLandscapeRotation()
         }
         Log.logInfo("New rotation: \(rotation.rawValue)")
-    }
-}
-
-typealias Scaling = ViewController
-extension Scaling {
-    func contentScaleOfPhoto(size: CGSize) -> CGFloat {
-        let widthScale = photoScrollView.bounds.size.width / size.width
-        let heightScale = photoScrollView.bounds.size.height / size.height
-        let scale = min(widthScale, heightScale)
-        Log.logVerbose("Scale is: \(scale)")
-        return scale
-    }
-    
-    func scaleToLandscape(_ size: CGSize) -> CGRect {
-        Log.logInfo("scaleToLandscape: \(size)")
-        
-        let scale = size.height / size.width
-        var newWidth = photoScrollView.bounds.width
-        var newHeight = newWidth * scale
-
-        if scale >= 1.0 { // Portrait oriented photo
-            newHeight = photoScrollView.bounds.height
-            newWidth = newHeight / scale
-        }
-
-        let xValue = (photoScrollView.bounds.width - newWidth) / 2
-        let yValue = (photoScrollView.bounds.height - newHeight) / 2
-
-        let scaledSize = CGRect(x: xValue, y: yValue, width: newWidth, height: newHeight)
-        Log.logVerbose("Scaled size: \(size), to landscape: \(scaledSize)")
-        return scaledSize
-        
-//        let scaledWidth = size.width * contentScaleOfPhoto(size: size)
-//        let scaledHeight = size.height * contentScaleOfPhoto(size: size)
-//        let xValue = (photoScrollView.frame.width - scaledWidth) / 2
-//        let yValue = (photoScrollView.frame.height - scaledHeight) / 2
-//
-//        let scaledSize = CGRect(x: xValue, y: yValue, width: scaledWidth, height: scaledHeight)
-//        Log.logVerbose("Scaled size: \(size), to landscape: \(scaledSize)")
-//        return scaledSize
-    }
-    
-    func scaleToPortrait(_ size: CGSize) -> CGRect {
-        Log.logInfo("scaleToPortrait: \(size)")
-        let scale = size.height / size.width
-        var newWidth = photoScrollView.bounds.height
-        var newHeight = newWidth * scale
-        
-        if scale >= 1.0 { // Portrait oriented photo
-            newHeight = photoScrollView.bounds.width
-            newWidth = newHeight / scale
-        }
-        
-        let xValue = (photoScrollView.bounds.width - newWidth) / 2
-        let yValue = (photoScrollView.bounds.height - newHeight) / 2
-        
-        let scaledSize = CGRect(x: xValue, y: yValue, width: newWidth, height: newHeight)
-        Log.logVerbose("Scaled size: \(size), to portrait: \(scaledSize)")
-        return scaledSize
     }
 }
 
@@ -567,20 +502,6 @@ extension Delegates: UINavigationControllerDelegate, UIImagePickerControllerDele
             let loadedPhoto = LoadedPhoto(image: image, detail: photoDetail)
             strongSelf.addNew(loadedPhoto)
             strongSelf.setVisibilityForButtons()
-        }
-    }
-}
-
-typealias Grid = ViewController
-extension Grid {
-    func addGridView() {
-        Log.logInfo("Adding grid view")
-        gridView = PhotoGrid()
-        if let gridView = gridView {
-            gridView.backgroundColor = UIColor.clear
-            gridView.alpha = 0.3
-            photoView.addSubview(gridView)
-            gridView.frame = photoView.bounds
         }
     }
 }

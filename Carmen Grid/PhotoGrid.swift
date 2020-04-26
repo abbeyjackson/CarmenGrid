@@ -8,7 +8,7 @@
 
 import UIKit
 
-@IBDesignable class PhotoGrid: UIView {
+@IBDesignable class PhotoGrid: UIImageView {
     
     //MARK: Properties
     var drawableWidth: Double {
