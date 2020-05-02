@@ -30,6 +30,10 @@ class ViewController: UIViewController {
     
     @IBOutlet weak var photoViewHeightConstraint: NSLayoutConstraint!
     @IBOutlet weak var photoViewWidthConstraint: NSLayoutConstraint!
+
+    override var prefersStatusBarHidden: Bool {
+        return true
+    }
     
     var imagePickerController = UIImagePickerController()
     
@@ -47,9 +51,6 @@ class ViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        photoView.backgroundColor = .red
-        photoParentView.backgroundColor = .blue
-    
         loadPreviousRotationSettings()
         setUpButtons()
         setUpLockLabel()
@@ -62,7 +63,6 @@ class ViewController: UIViewController {
             self.setVisibilityForButtons()
         }
         
-
         deleteStaleImageFiles()
     }
     
