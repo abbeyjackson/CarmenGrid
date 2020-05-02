@@ -297,7 +297,43 @@ extension Visibility {
 typealias ButtonActions = ViewController
 extension ButtonActions {
     @IBAction func shareTapped(_ sender: UIButton) {
+        guard photoView.image != nil else { return }
         
+        if rotation == .portrait {
+            let alert = UIAlertController(title: "Share Photo", message: "To share the photo the screen must rotate to landscape.", preferredStyle: .alert)
+            let yesAction = UIAlertAction(title: "Rotate", style: .destructive) { _ in
+                self.rotation = self.rotation.rotate
+                self.setRotation {
+                    self.showShareSheet()
+                }
+                Log.logVerbose("User sharing image")
+            }
+            let cancelAction = UIAlertAction(title: "Cancel", style: .cancel) { _ in
+                Log.logVerbose("User cancelled clearing photos")
+            }
+            alert.addAction(yesAction)
+            alert.addAction(cancelAction)
+            alert.view.isHidden = true
+            alert.view.transform = self.photoParentView.transform
+            present(alert, animated: false) {
+                alert.view.transform = self.photoButton.transform
+                alert.view.isHidden = false
+            }
+        } else {
+            showShareSheet()
+        }
+    }
+    
+    func showShareSheet() {
+        guard let image = photoView.image else { return }
+        
+        let shareSheet = UIActivityViewController(activityItems: ["Download CarmenGrid!", image], applicationActivities: [])
+        shareSheet.popoverPresentationController?.sourceView = self.shareButton.imageView
+        shareSheet.view.isHidden = true
+        self.present(shareSheet, animated: true) {
+            shareSheet.view.transform = self.photoButton.transform
+            shareSheet.view.isHidden = false
+        }
     }
     
     @objc func photoTapped() {
@@ -427,7 +463,7 @@ extension ButtonActions {
 typealias Rotation = ViewController
 extension Rotation {
     
-    func setPortraitRotation() {
+    func setPortraitRotation(_ completion: () -> () = {}) {
         guard let size = photoView.image?.size else { return }
         let scale = size.height / size.width
 
@@ -444,9 +480,10 @@ extension Rotation {
         
         photoView.transform = rotation.transform
         photoView.layoutIfNeeded()
+        completion()
     }
     
-    func setLandscapeRotation() {
+    func setLandscapeRotation(_ completion: () -> () = {}) {
         guard let size = photoView.image?.size else { return }
         let scale = size.height / size.width
 
@@ -463,17 +500,18 @@ extension Rotation {
         
         photoView.transform = rotation.transform
         photoView.layoutIfNeeded()
+        completion()
     }
     
-    func setRotation() {
+    func setRotation(completion: () -> () = {}){
         Log.logInfo("Set Rotation: \(rotation)")
         photoScrollView.zoomScale = 1.0
         imagePickerController.view.transform = rotation.transform
         buttons.forEach { $0.transform = rotation.transform }
         if rotation == .portrait {
-           setPortraitRotation()
+           setPortraitRotation(completion)
         } else {
-            setLandscapeRotation()
+            setLandscapeRotation(completion)
         }
         Log.logInfo("New rotation: \(rotation.rawValue)")
     }
