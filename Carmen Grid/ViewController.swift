@@ -19,6 +19,7 @@ class ViewController: UIViewController {
     
     @IBOutlet weak var lockedLabel: UILabel!
     @IBOutlet weak var buttonsView: UIView!
+    @IBOutlet weak var shareButton: UIButton!
     @IBOutlet weak var photoButton: UIButton!
     @IBOutlet weak var swapButton: UIButton!
     @IBOutlet weak var lockButton: UIButton!
@@ -295,6 +296,10 @@ extension Visibility {
 
 typealias ButtonActions = ViewController
 extension ButtonActions {
+    @IBAction func shareTapped(_ sender: UIButton) {
+        
+    }
+    
     @objc func photoTapped() {
         Log.logUserEvent("User adding photo")
         guard PHPhotoLibrary.authorizationStatus() == .authorized else {

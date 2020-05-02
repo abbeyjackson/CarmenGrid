@@ -32,10 +32,22 @@
                                         <rect key="frame" x="5" y="0.0" width="60" height="834"/>
                                         <subviews>
                                             <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" distribution="fillEqually" alignment="center" spacing="50" translatesAutoresizingMaskIntoConstraints="NO" id="PLZ-jh-Fgu">
-                                                <rect key="frame" x="0.0" y="0.0" width="60" height="834"/>
+                                                <rect key="frame" x="0.0" y="16" width="60" height="802"/>
                                                 <subviews>
+                                                    <button opaque="NO" contentMode="scaleAspectFit" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="QG4-0D-3pI">
+                                                        <rect key="frame" x="15" y="0.0" width="30" height="71.5"/>
+                                                        <accessibility key="accessibilityConfiguration" identifier="share" label="share"/>
+                                                        <state key="normal">
+                                                            <color key="titleColor" white="0.66666666666666663" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                                            <color key="titleShadowColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                                            <preferredSymbolConfiguration key="preferredSymbolConfiguration" scale="default"/>
+                                                        </state>
+                                                        <connections>
+                                                            <action selector="shareTapped:" destination="BYZ-38-t0r" eventType="touchUpInside" id="hCI-z7-CGS"/>
+                                                        </connections>
+                                                    </button>
                                                     <button opaque="NO" contentMode="scaleAspectFit" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="lur-id-0s9">
-                                                        <rect key="frame" x="15" y="0.0" width="30" height="97.5"/>
+                                                        <rect key="frame" x="15" y="121.5" width="30" height="72"/>
                                                         <color key="backgroundColor" white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                                         <accessibility key="accessibilityConfiguration" identifier="photo" label="photo"/>
                                                         <inset key="imageEdgeInsets" minX="6" minY="0.0" maxX="6" maxY="0.0"/>
@@ -45,7 +57,7 @@
                                                         </state>
                                                     </button>
                                                     <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="2Vk-nc-mTm">
-                                                        <rect key="frame" x="15" y="147.5" width="30" height="97"/>
+                                                        <rect key="frame" x="15" y="243.5" width="30" height="71.5"/>
                                                         <color key="backgroundColor" white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                                         <accessibility key="accessibilityConfiguration" identifier="swap" label="swap"/>
                                                         <color key="tintColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
@@ -58,7 +70,7 @@
                                                         </connections>
                                                     </button>
                                                     <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="PZU-zh-0CF">
-                                                        <rect key="frame" x="15" y="294.5" width="30" height="97.5"/>
+                                                        <rect key="frame" x="15" y="365" width="30" height="72"/>
                                                         <color key="backgroundColor" white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                                         <accessibility key="accessibilityConfiguration" identifier="lock" label="lock"/>
                                                         <state key="normal">
@@ -70,7 +82,7 @@
                                                         </connections>
                                                     </button>
                                                     <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="wordWrap" translatesAutoresizingMaskIntoConstraints="NO" id="z7r-vg-Dak">
-                                                        <rect key="frame" x="15" y="442" width="30" height="97.5"/>
+                                                        <rect key="frame" x="15" y="487" width="30" height="71.5"/>
                                                         <color key="backgroundColor" white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                                         <accessibility key="accessibilityConfiguration" identifier="palette" label="palette"/>
                                                         <fontDescription key="fontDescription" type="system" pointSize="22"/>
@@ -83,7 +95,7 @@
                                                         </connections>
                                                     </button>
                                                     <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="wordWrap" translatesAutoresizingMaskIntoConstraints="NO" id="D6B-p8-bBg">
-                                                        <rect key="frame" x="15" y="589.5" width="30" height="97"/>
+                                                        <rect key="frame" x="15" y="608.5" width="30" height="72"/>
                                                         <color key="backgroundColor" white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                                         <accessibility key="accessibilityConfiguration" identifier="grid" label="grid"/>
                                                         <fontDescription key="fontDescription" type="system" pointSize="22"/>
@@ -96,7 +108,7 @@
                                                         </connections>
                                                     </button>
                                                     <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="cxQ-nP-Av9">
-                                                        <rect key="frame" x="15" y="736.5" width="30" height="97.5"/>
+                                                        <rect key="frame" x="15" y="730.5" width="30" height="71.5"/>
                                                         <accessibility key="accessibilityConfiguration" identifier="rotate" label="rotate"/>
                                                         <state key="normal">
                                                             <color key="titleColor" white="0.66666666666666663" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
@@ -113,8 +125,8 @@
                                         <color key="backgroundColor" white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                         <constraints>
                                             <constraint firstItem="PLZ-jh-Fgu" firstAttribute="leading" secondItem="56k-89-OXQ" secondAttribute="leading" id="DGb-4U-7dv"/>
-                                            <constraint firstItem="PLZ-jh-Fgu" firstAttribute="top" secondItem="56k-89-OXQ" secondAttribute="top" id="J29-51-7Qr"/>
-                                            <constraint firstAttribute="bottom" secondItem="PLZ-jh-Fgu" secondAttribute="bottom" id="lxN-0A-DC8"/>
+                                            <constraint firstItem="PLZ-jh-Fgu" firstAttribute="top" secondItem="56k-89-OXQ" secondAttribute="top" constant="16" id="J29-51-7Qr"/>
+                                            <constraint firstAttribute="bottom" secondItem="PLZ-jh-Fgu" secondAttribute="bottom" constant="16" id="lxN-0A-DC8"/>
                                             <constraint firstAttribute="trailing" secondItem="PLZ-jh-Fgu" secondAttribute="trailing" id="u6v-Ra-qZR"/>
                                         </constraints>
                                     </view>
@@ -225,6 +237,7 @@
                         <outlet property="photoViewWidthConstraint" destination="tvN-DN-gdE" id="YPt-4g-HyP"/>
                         <outlet property="rotateButton" destination="cxQ-nP-Av9" id="fRR-Xg-MEP"/>
                         <outlet property="scrollParentView" destination="NdZ-ep-bCQ" id="IkT-fM-iCx"/>
+                        <outlet property="shareButton" destination="QG4-0D-3pI" id="3xR-ao-IQC"/>
                         <outlet property="swapButton" destination="2Vk-nc-mTm" id="7Iy-Ik-AXP"/>
                         <outletCollection property="buttons" destination="PZU-zh-0CF" collectionClass="NSMutableArray" id="hnM-pj-yE9"/>
                         <outletCollection property="buttons" destination="lur-id-0s9" collectionClass="NSMutableArray" id="VPE-lk-3ET"/>
@@ -232,6 +245,7 @@
                         <outletCollection property="buttons" destination="D6B-p8-bBg" collectionClass="NSMutableArray" id="Hyg-nZ-eGe"/>
                         <outletCollection property="buttons" destination="cxQ-nP-Av9" collectionClass="NSMutableArray" id="vc0-bG-1Kv"/>
                         <outletCollection property="buttons" destination="2Vk-nc-mTm" collectionClass="NSMutableArray" id="5gx-lF-v7B"/>
+                        <outletCollection property="buttons" destination="QG4-0D-3pI" collectionClass="NSMutableArray" id="ztq-vM-QXq"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="dkx-z0-nzr" sceneMemberID="firstResponder"/>
