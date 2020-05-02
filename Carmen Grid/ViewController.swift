@@ -327,7 +327,7 @@ extension ButtonActions {
     func showShareSheet() {
         guard let image = photoView.image else { return }
         
-        let shareSheet = UIActivityViewController(activityItems: ["Download CarmenGrid!", image], applicationActivities: [])
+        let shareSheet = UIActivityViewController(activityItems: [image], applicationActivities: [])
         shareSheet.popoverPresentationController?.sourceView = self.shareButton.imageView
         shareSheet.view.isHidden = true
         self.present(shareSheet, animated: true) {
