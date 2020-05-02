@@ -511,6 +511,7 @@ extension Persistance {
     func addNew(_ photo: LoadedPhoto) {
         loadPhoto(photo) { success in
             guard success else { return }
+            self.photoView.image = nil
             self.refresh()
             self.save(photo)
             self.deleteStaleImageFiles()
