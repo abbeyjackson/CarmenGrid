@@ -12,10 +12,10 @@ import UIKit
     
     //MARK: Properties
     var drawableWidth: Double {
-        return Double(image?.size.width ?? 0)
+        return Double(baseImage?.size.width ?? 0)
     }
     var drawableHeight: Double {
-        return Double(image?.size.height ?? 0)
+        return Double(baseImage?.size.height ?? 0)
     }
     var numberOfColumns: Int = 0
     var numberOfRows: Int = 0
@@ -33,6 +33,15 @@ import UIKit
     
     private var aspectRatio: Double {
         return columnWidth / rowHeight
+    }
+    
+    private var baseImage: UIImage?
+    override var image: UIImage? {
+        didSet {
+            if baseImage == nil {
+                baseImage = image
+            }
+        }
     }
     
     //MARK: Drawing
@@ -65,23 +74,23 @@ import UIKit
     }
     
     private func drawLines() {
-        guard numberOfRows > 0 && numberOfColumns > 0,
-            let image  = image else { return }
-    
-        UIGraphicsBeginImageContext(image.size)
-        image.draw(in: CGRect(origin: CGPoint.zero, size: image.size))
+        guard let baseImage = baseImage else { return }
+        UIGraphicsBeginImageContext(baseImage.size)
+        baseImage.draw(in: CGRect(origin: CGPoint.zero, size: baseImage.size))
           
         guard let context = UIGraphicsGetCurrentContext() else { return }
         
         context.setLineWidth(lineWidth)
         context.setStrokeColor(lineColor.color)
         
-        drawVerticalLines(on: context)
-        drawHorizontalLines(on: context)
-        
-        if gridType == .triangles || gridType == .smallTriangles {
-            drawDownwardLines(on: context)
-            drawUpwardLines(on: context)
+        if numberOfRows > 0 && numberOfColumns > 0 {
+            drawVerticalLines(on: context)
+            drawHorizontalLines(on: context)
+            
+            if gridType == .triangles || gridType == .smallTriangles {
+                drawDownwardLines(on: context)
+                drawUpwardLines(on: context)
+            }
         }
         
         context.strokePath()
