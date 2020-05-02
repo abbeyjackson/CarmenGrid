@@ -12,10 +12,10 @@ import UIKit
     
     //MARK: Properties
     var drawableWidth: Double {
-        return Double(frame.size.width)
+        return Double(image?.size.width ?? 0)
     }
     var drawableHeight: Double {
-        return Double(frame.size.height)
+        return Double(image?.size.height ?? 0)
     }
     var numberOfColumns: Int = 0
     var numberOfRows: Int = 0
@@ -65,10 +65,13 @@ import UIKit
     }
     
     private func drawLines() {
-        guard numberOfRows > 0 && numberOfColumns > 0 else { return }
-        
-        guard let context = UIGraphicsGetCurrentContext() else {
-            return }
+        guard numberOfRows > 0 && numberOfColumns > 0,
+            let image  = image else { return }
+    
+        UIGraphicsBeginImageContext(image.size)
+        image.draw(in: CGRect(origin: CGPoint.zero, size: image.size))
+          
+        guard let context = UIGraphicsGetCurrentContext() else { return }
         
         context.setLineWidth(lineWidth)
         context.setStrokeColor(lineColor.color)
@@ -82,6 +85,10 @@ import UIKit
         }
         
         context.strokePath()
+        
+        let newImage = UIGraphicsGetImageFromCurrentImageContext()
+        UIGraphicsEndImageContext()
+        self.image = newImage
     }
     
     //MARK: Line Calculations

@@ -57,7 +57,6 @@ class ViewController: UIViewController {
             setUpImagePicker()
             setUpPhotoViews()
             self.refresh()
-//            self.addGridView()
             self.loadInitialGridViewSettings()
             self.setVisibilityForButtons()
         }
