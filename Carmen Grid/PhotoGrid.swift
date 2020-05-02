@@ -38,7 +38,7 @@ import UIKit
     private var baseImage: UIImage?
     override var image: UIImage? {
         didSet {
-            if baseImage == nil {
+            if image == nil || baseImage == nil {
                 baseImage = image
             }
         }

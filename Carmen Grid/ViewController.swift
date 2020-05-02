@@ -352,6 +352,7 @@ extension ButtonActions {
         Log.logUserEvent("User swapping photos")
         visibleIndex = (visibleIndex + 1) == loadedPhotos.count ? 0 : (visibleIndex + 1)
         DispatchQueue.main.async {
+            self.photoView.image = nil
             self.refresh()
         }
         updateDefaults()
