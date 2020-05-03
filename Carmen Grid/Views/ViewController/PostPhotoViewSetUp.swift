@@ -26,9 +26,9 @@ extension PostPhotoLoadSetUp {
     private func loadInitialGridViewSettings() {
         let photo = loadedPhotos[safe: visibleIndex]
         if let gridTypeInt = photo?.detail.gridType,
-            let gridType = PhotoGrid.GridType(rawValue: gridTypeInt),
+            let gridType = GridType(rawValue: gridTypeInt),
             let gridColorInt = photo?.detail.gridColor,
-            let gridColor = PhotoGrid.GridColor(rawValue: gridColorInt) {
+            let gridColor = GridColor(rawValue: gridColorInt) {
             photoView.set(type: gridType, color: gridColor)
         } else {
             photoView.set(type: .none)

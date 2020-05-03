@@ -51,7 +51,7 @@ extension Visibility {
     
     private func setVisibilityForPaletteButton() {
         let photo = loadedPhotos[safe: visibleIndex]
-        let gridVisible = photo != nil && photo?.detail.gridType != PhotoGrid.GridType.none.rawValue
+        let gridVisible = photo != nil && photo?.detail.gridType != GridType.none.rawValue
         let paletteAlpha = gridVisible ? 1.0 : 0.0
         paletteButton.alpha = CGFloat(paletteAlpha)
         paletteButton.isUserInteractionEnabled = gridVisible
@@ -59,8 +59,8 @@ extension Visibility {
     
     private func setVisibilityForGrid() {
         guard let photo = loadedPhotos[safe: visibleIndex],
-            let gridType = PhotoGrid.GridType(rawValue: photo.detail.gridType),
-            let gridColor = PhotoGrid.GridColor(rawValue: photo.detail.gridColor) else {
+            let gridType = GridType(rawValue: photo.detail.gridType),
+            let gridColor = GridColor(rawValue: photo.detail.gridColor) else {
                 Log.logInfo("No photo loaded")
                 return
         }

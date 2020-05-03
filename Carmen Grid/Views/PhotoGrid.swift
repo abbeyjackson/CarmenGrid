@@ -8,24 +8,34 @@
 
 import UIKit
 
-@IBDesignable class PhotoGrid: UIImageView {
+protocol Griddable {
+    var lineColor: GridColor { get }
+    var gridType: GridType { get }
+    func swapGrid(completion: (_ newGridType: GridType) -> ())
+    func swapLineColor(completion: (_ newGridColor: GridColor) -> ())
+    func set(type: GridType, color: GridColor?)
+}
+
+@IBDesignable class PhotoGrid: UIImageView, Griddable {
     
-    //MARK: Properties
-    var drawableWidth: Double {
+    //MARK: Public Properties
+    private(set) var lineColor: GridColor = .white
+    private(set) var gridType: GridType = .none
+    
+    //MARK: Private Properties
+    private var drawableWidth: Double {
         return Double(baseImage?.size.width ?? 0)
     }
-    var drawableHeight: Double {
+    private var drawableHeight: Double {
         return Double(baseImage?.size.height ?? 0)
     }
-    var numberOfColumns: Int = 0
-    var numberOfRows: Int = 0
-    var columnWidth = 0.0
-    var rowHeight = 0.0
+    private var numberOfColumns: Int = 0
+    private var numberOfRows: Int = 0
+    private var columnWidth = 0.0
+    private var rowHeight = 0.0
     
-    var lineWidth: CGFloat = 3
-    var lineOffset: CGFloat { return lineWidth / 2 }
-    var lineColor: GridColor = .white
-    var gridType: GridType = .none
+    private var lineWidth: CGFloat = 3
+    private var lineOffset: CGFloat { return lineWidth / 2 }
     
     private var smallestSide: Double {
         return Double(min(drawableWidth, drawableHeight))
@@ -100,7 +110,16 @@ import UIKit
         self.image = newImage
     }
     
-    //MARK: Line Calculations
+    private func updateVisible() {
+        setNeedsDisplay()
+        setNeedsLayout()
+        draw(self.bounds)
+        layoutIfNeeded()
+    }
+}
+
+private typealias DrawLines = PhotoGrid
+extension DrawLines {
     private func drawVerticalLines(on context: CGContext) {
         let centerX = drawableWidth/2
         for i in 0...(numberOfColumns + 1)/2 {
@@ -167,13 +186,6 @@ import UIKit
             context.move(to: rightStartPoint)
             context.addLine(to: rightEndPoint)
         }
-    }
-    
-    private func updateVisible() {
-        setNeedsDisplay()
-        setNeedsLayout()
-        draw(self.bounds)
-        layoutIfNeeded()
     }
 }
 
