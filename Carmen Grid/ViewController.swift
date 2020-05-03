@@ -58,8 +58,6 @@ class ViewController: UIViewController {
             setInitialVisiblePhoto()
             setUpImagePicker()
             setUpPhotoViews()
-            self.refresh()
-            self.loadInitialGridViewSettings()
             self.setVisibilityForButtons()
         }
         
@@ -68,8 +66,14 @@ class ViewController: UIViewController {
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
+    }
+    
+    override func viewDidAppear(_ animated: Bool) {
+        refresh()
+        loadInitialGridViewSettings()
         showInstructionLabel()
         setUpPhotoLibraryPermissions()
+        super.viewDidAppear(animated)
     }
 }
 
