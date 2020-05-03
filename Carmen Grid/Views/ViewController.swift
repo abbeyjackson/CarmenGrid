@@ -57,18 +57,18 @@ class ViewController: UIViewController {
     }
     
     override func viewDidAppear(_ animated: Bool) {
-        refresh()
-        postPhotoLoadSetUp()
-        setUpPhotoLibraryPermissions()
+        DispatchQueue.main.async {
+            self.refresh()
+            self.postPhotoLoadSetUp()
+            self.setUpPhotoLibraryPermissions()
+        }
         super.viewDidAppear(animated)
     }
     
     func refresh() {
-        DispatchQueue.main.async {
             self.reloadVisiblePhoto()
             self.setRotation()
             self.setVisibleViews()
-        }
     }
 }
 

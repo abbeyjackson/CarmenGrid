@@ -69,7 +69,7 @@ extension Visibility {
     }
     
     private func setVisibilityForInstructionLabel() {
-        let noPhotos = (photoView.image == nil)
-        instructionLabel.isHidden = noPhotos
+        let isPhotoLoaded = (photoView.image != nil)
+        instructionLabel.isHidden = isPhotoLoaded
     }
 }

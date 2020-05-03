@@ -13,7 +13,6 @@
 		535EBFDC225DBB0900AF943D /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 535EBFC9225DBB0800AF943D /* ViewController.swift */; };
 		535EBFDD225DBB0900AF943D /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 535EBFCA225DBB0800AF943D /* Assets.xcassets */; };
 		535EBFDF225DBB0900AF943D /* LoadedPhoto.swift in Sources */ = {isa = PBXBuildFile; fileRef = 535EBFCD225DBB0800AF943D /* LoadedPhoto.swift */; };
-		535EBFE0225DBB0900AF943D /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 535EBFCF225DBB0800AF943D /* LaunchScreen.storyboard */; };
 		535EBFE3225DBB0900AF943D /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 535EBFD4225DBB0900AF943D /* AppDelegate.swift */; };
 		535EBFE4225DBB0900AF943D /* GridColor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 535EBFD5225DBB0900AF943D /* GridColor.swift */; };
 		535EBFE5225DBB0900AF943D /* DisplayRotation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 535EBFD6225DBB0900AF943D /* DisplayRotation.swift */; };
@@ -28,6 +27,8 @@
 		C45238E9245E4FB4004F7E90 /* Persistance.swift in Sources */ = {isa = PBXBuildFile; fileRef = C45238E8245E4FB4004F7E90 /* Persistance.swift */; };
 		C45238EB245E981A004F7E90 /* Alerts.swift in Sources */ = {isa = PBXBuildFile; fileRef = C45238EA245E981A004F7E90 /* Alerts.swift */; };
 		C45238F2245E9CE0004F7E90 /* GridType.swift in Sources */ = {isa = PBXBuildFile; fileRef = C45238F1245E9CE0004F7E90 /* GridType.swift */; };
+		C45238F3245E9FC1004F7E90 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 535EBFCF225DBB0800AF943D /* LaunchScreen.storyboard */; };
+		C45238F4245E9FC1004F7E90 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 535EBFD1225DBB0800AF943D /* Main.storyboard */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -221,8 +222,9 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				C45238F3245E9FC1004F7E90 /* LaunchScreen.storyboard in Resources */,
+				C45238F4245E9FC1004F7E90 /* Main.storyboard in Resources */,
 				535EBFDD225DBB0900AF943D /* Assets.xcassets in Resources */,
-				535EBFE0225DBB0900AF943D /* LaunchScreen.storyboard in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
