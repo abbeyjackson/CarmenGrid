@@ -2,7 +2,7 @@
 //  Persistance.swift
 //  Carmen Grid
 //
-//  Created by Abbey Bobabbey on 2020-05-02.
+//  Created by Abbey Jackson on 2020-05-02.
 //  Copyright © 2020 Abbey Jackson. All rights reserved.
 //
 
@@ -52,22 +52,7 @@ extension Persistance {
             visibleIndex = 0
             success(true)
         } else if loadedPhotos.count == numberOfPhotosToStore {
-            Log.logInfo("Showing user max number of photos alert")
-            let alert = UIAlertController(title: "Warning", message: "You have \(numberOfPhotosToStore) photos loaded already. Replace current photo?", preferredStyle: .alert)
-            let okAction = UIAlertAction(title: "Replace Current", style: .destructive) { _ in
-                self.loadedPhotos[self.visibleIndex] = photo
-                success(true)
-            }
-            let cancelAction = UIAlertAction(title: "Cancel", style: .cancel) { _ in
-                success(false)
-            }
-            alert.addAction(okAction)
-            alert.addAction(cancelAction)
-            alert.view.isHidden = true
-            present(alert, animated: false) {
-                alert.view.transform = self.photoButton.transform
-                alert.view.isHidden = false
-            }
+            showMaxPhotoAlert(photo, success: success)
         } else {
             Log.logInfo("Inserting photo at visibleIndex: \(visibleIndex)")
             loadedPhotos.insert(photo, at: visibleIndex)
@@ -127,6 +112,13 @@ extension Persistance {
     }
     
     func deleteAllPhotos() {
+        loadedPhotos.removeAll()
+        visibleIndex = 0
+        removePhotosFromDisk()
+        updateDefaults()
+    }
+    
+    private func removePhotosFromDisk() {
         do {
             let existingFilenames = try FileManager.default.contentsOfDirectory(at: defaultsDirectory, includingPropertiesForKeys: nil, options: []).map { $0.lastPathComponent }.filter { $0.contains(loadedPhotoPrefix)}
             Log.logVerbose("Existing filenames count: \(existingFilenames)")

@@ -78,39 +78,9 @@ extension ButtonActions {
         guard photoView.image != nil else { return }
         
         if rotation == .portrait {
-            let alert = UIAlertController(title: "Share Photo", message: "To share the photo the screen must rotate to landscape.", preferredStyle: .alert)
-            let yesAction = UIAlertAction(title: "Rotate", style: .destructive) { _ in
-                self.rotation = self.rotation.rotate
-                self.setRotation {
-                    self.showShareSheet()
-                }
-                Log.logVerbose("User sharing image")
-            }
-            let cancelAction = UIAlertAction(title: "Cancel", style: .cancel) { _ in
-                Log.logVerbose("User cancelled sharing photo")
-            }
-            alert.addAction(yesAction)
-            alert.addAction(cancelAction)
-            alert.view.isHidden = true
-            alert.view.transform = self.photoParentView.transform
-            present(alert, animated: false) {
-                alert.view.transform = self.photoButton.transform
-                alert.view.isHidden = false
-            }
+            showRotateToShareAlert()
         } else {
             showShareSheet()
-        }
-    }
-    
-    private func showShareSheet() {
-        guard let image = photoView.image else { return }
-        
-        let shareSheet = UIActivityViewController(activityItems: [image], applicationActivities: [])
-        shareSheet.popoverPresentationController?.sourceView = self.shareButton.imageView
-        shareSheet.view.isHidden = true
-        self.present(shareSheet, animated: true) {
-            shareSheet.view.transform = self.photoButton.transform
-            shareSheet.view.isHidden = false
         }
     }
     
@@ -122,15 +92,7 @@ extension ButtonActions {
         }
         
         guard UIImagePickerController.isSourceTypeAvailable(.photoLibrary) else {
-            Log.logError("Device can not display photo library")
-            let alert = UIAlertController(title: "Error", message: "Your device can not display the photo library", preferredStyle: .alert)
-            let okAction = UIAlertAction(title: "Ok", style: .cancel, handler: nil)
-            alert.addAction(okAction)
-            alert.view.isHidden = true
-            present(alert, animated: false) {
-                alert.view.transform = self.photoButton.transform
-                alert.view.isHidden = false
-            }
+            showNoPhotoLibraryAlert()
             return
         }
         
@@ -139,32 +101,7 @@ extension ButtonActions {
     
     @objc func clearPhotos(gesture: UIGestureRecognizer) {
         guard gesture.state == .began else { return }
-        Log.logUserEvent("User clearing photos")
-        let alert = UIAlertController(title: "Clear All Photos", message: "Are you sure you want to clear all photos?", preferredStyle: .alert)
-        let yesAction = UIAlertAction(title: "Clear All Photos", style: .destructive) { _ in
-            alert.view.isHidden = true
-            self.photoView.image = nil
-            self.photoView.set(type: .none)
-            self.deleteAllPhotos()
-            self.loadedPhotos.removeAll()
-            self.setVisibleViews()
-            self.visibleIndex = 0
-            self.updateDefaults()
-            self.instructionLabel.transform = self.rotation.transform
-            self.instructionLabel.isHidden = false
-        }
-        let cancelAction = UIAlertAction(title: "Cancel", style: .cancel) { _ in
-            alert.view.isHidden = true
-            Log.logVerbose("User cancelled clearing photos")
-        }
-        alert.addAction(yesAction)
-        alert.addAction(cancelAction)
-        alert.view.isHidden = true
-        alert.view.transform = self.photoParentView.transform
-        present(alert, animated: false) {
-            alert.view.transform = self.photoButton.transform
-            alert.view.isHidden = false
-        }
+        showClearPhotosAlert()
     }
     
     @IBAction func swapTapped(_ sender: UIButton) {

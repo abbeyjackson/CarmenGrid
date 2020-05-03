@@ -27,6 +27,7 @@
 		C45238E5245E4ED9004F7E90 /* Visibility.swift in Sources */ = {isa = PBXBuildFile; fileRef = C45238E4245E4ED9004F7E90 /* Visibility.swift */; };
 		C45238E7245E4F81004F7E90 /* Rotation.swift in Sources */ = {isa = PBXBuildFile; fileRef = C45238E6245E4F81004F7E90 /* Rotation.swift */; };
 		C45238E9245E4FB4004F7E90 /* Persistance.swift in Sources */ = {isa = PBXBuildFile; fileRef = C45238E8245E4FB4004F7E90 /* Persistance.swift */; };
+		C45238EB245E981A004F7E90 /* Alerts.swift in Sources */ = {isa = PBXBuildFile; fileRef = C45238EA245E981A004F7E90 /* Alerts.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -54,6 +55,7 @@
 		C45238E4245E4ED9004F7E90 /* Visibility.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Visibility.swift; sourceTree = "<group>"; };
 		C45238E6245E4F81004F7E90 /* Rotation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Rotation.swift; sourceTree = "<group>"; };
 		C45238E8245E4FB4004F7E90 /* Persistance.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Persistance.swift; sourceTree = "<group>"; };
+		C45238EA245E981A004F7E90 /* Alerts.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Alerts.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -133,6 +135,7 @@
 				C45238E4245E4ED9004F7E90 /* Visibility.swift */,
 				C45238E6245E4F81004F7E90 /* Rotation.swift */,
 				C45238E8245E4FB4004F7E90 /* Persistance.swift */,
+				C45238EA245E981A004F7E90 /* Alerts.swift */,
 			);
 			path = ViewController;
 			sourceTree = "<group>";
@@ -225,6 +228,7 @@
 				535EBFDA225DBB0900AF943D /* TransparentView.swift in Sources */,
 				535EBFDC225DBB0900AF943D /* ViewController.swift in Sources */,
 				C45238DE245E43BC004F7E90 /* ViewSetUp.swift in Sources */,
+				C45238EB245E981A004F7E90 /* Alerts.swift in Sources */,
 				535EBFE5225DBB0900AF943D /* DisplayRotation.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

@@ -2,7 +2,7 @@
 //  UserMessage.swift
 //  Carmen Grid
 //
-//  Created by Abbey Bobabbey on 2020-05-02.
+//  Created by Abbey Jackson on 2020-05-02.
 //  Copyright © 2020 Abbey Jackson. All rights reserved.
 //
 

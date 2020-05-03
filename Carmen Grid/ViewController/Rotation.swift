@@ -2,7 +2,7 @@
 //  Rotation.swift
 //  Carmen Grid
 //
-//  Created by Abbey Bobabbey on 2020-05-02.
+//  Created by Abbey Jackson on 2020-05-02.
 //  Copyright © 2020 Abbey Jackson. All rights reserved.
 //
 
@@ -14,6 +14,7 @@ extension Rotation {
         Log.logInfo("Set Rotation: \(rotation)")
         photoScrollView.zoomScale = 1.0
         imagePickerController.view.transform = rotation.transform
+        instructionLabel.transform = rotation.transform
         buttons.forEach { $0.transform = rotation.transform }
         if rotation == .portrait {
             setPortraitRotation(completion)
