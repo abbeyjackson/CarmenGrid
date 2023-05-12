@@ -39,6 +39,7 @@
 		535EBFD6225DBB0900AF943D /* DisplayRotation.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DisplayRotation.swift; sourceTree = "<group>"; };
 		535EBFD7225DBB0900AF943D /* ArrayExtensions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ArrayExtensions.swift; sourceTree = "<group>"; };
 		5392FC32233E98A300F46CB2 /* Log.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Log.swift; sourceTree = "<group>"; };
+		539937AD2A0EE7A400C8CC85 /* Carmen Grid copy-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; name = "Carmen Grid copy-Info.plist"; path = "/Users/abbeyjackson/projects/CarmenGrid/Carmen Grid copy-Info.plist"; sourceTree = "<absolute>"; };
 		53DD3272224AE46500676BBE /* Carmen Grid.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Carmen Grid.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
@@ -90,6 +91,7 @@
 				535EBFAF225DBA5C00AF943D /* Carmen Grid */,
 				53DD3273224AE46500676BBE /* Products */,
 				A7C34C46F97159281B301C34 /* Pods */,
+				539937AD2A0EE7A400C8CC85 /* Carmen Grid copy-Info.plist */,
 			);
 			sourceTree = "<group>";
 		};
