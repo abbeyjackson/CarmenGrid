@@ -13,4 +13,4 @@ build:
     - bundle exec fastlane build
   artifacts:
     paths:
-    - ./CarmenGrid.ipa
+      - ./CarmenGrid.ipa
