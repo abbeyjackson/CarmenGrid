@@ -12,7 +12,7 @@ build:
     - bundle install
     - bundle update
     - fastlane --version
-    - bunder --version
+    - bundler --version
     - bundle exec fastlane build_upload_testflight --verbose
   artifacts:
     paths:
