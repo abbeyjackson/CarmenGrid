@@ -16,7 +16,7 @@ build:
     - bundle update
     - fastlane --version
     - bundler --version
-    - bundle exec fastlane build_upload_testflight --verbose
+    # - bundle exec fastlane build_upload_testflight --verbose
   artifacts:
     paths:
       - ./CarmenGrid.ipa
