@@ -9,6 +9,7 @@ variables:
 build:
   stage: build
   script:
+    - uname -a
     - bundle install
     - gem uninstall fastlane --all --executables
     - gem install fastlane --version 2.212.0 --no-document
