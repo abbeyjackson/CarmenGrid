@@ -11,6 +11,8 @@ build:
   script:
     - bundle install
     - bundle update
+    - fastlane --version
+    - bunder --version
     - bundle exec fastlane build_upload_testflight --verbose
   artifacts:
     paths:
