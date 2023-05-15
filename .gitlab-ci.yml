@@ -10,6 +10,7 @@ build:
   stage: build
   script:
     - bundle install
+    - bundle update
     - bundle exec fastlane build_upload_testflight
   artifacts:
     paths:
