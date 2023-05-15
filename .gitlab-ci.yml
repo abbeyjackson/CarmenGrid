@@ -10,9 +10,9 @@ build:
   stage: build
   script:
     - bundle install
-    - bundle update
     - gem uninstall fastlane --all --executables
-    - gem install fastlane --version 2.212.0 --no-document
+    - gem install fastlane
+    - bundle update
     - fastlane --version
     - bundler --version
     - bundle exec fastlane build_upload_testflight --verbose
