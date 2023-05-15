@@ -11,7 +11,7 @@ build:
   script:
     - bundle install
     - gem uninstall fastlane --all --executables
-    - gem install fastlane
+    - gem install fastlane --version 2.212.0 --no-document
     - bundle update
     - fastlane --version
     - bundler --version
