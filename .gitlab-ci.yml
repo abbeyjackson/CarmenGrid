@@ -1,0 +1,23 @@
+stages:
+  - build
+
+variables:
+  LC_ALL: "en_US.UTF-8"
+  LANG: "en_US.UTF-8"
+  GIT_STRATEGY: clone
+
+build:
+  stage: build
+  script:
+    - uname -a
+    - ls -al
+    # - bundle install
+    # - gem uninstall fastlane --all --executables
+    # - gem install fastlane --version 2.212.0 --no-document
+    # - bundle update
+    # - fastlane --version
+    # - bundler --version
+    # - bundle exec fastlane build_upload_testflight --verbose
+  artifacts:
+    paths:
+      - CarmenGrid.ipa
