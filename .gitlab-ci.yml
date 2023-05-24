@@ -21,3 +21,4 @@ build:
   artifacts:
     paths:
       - CarmenGrid.ipa
+      - codemagic.yaml
