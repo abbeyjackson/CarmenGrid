@@ -18,6 +18,7 @@ build:
     # - fastlane --version
     # - bundler --version
     # - bundle exec fastlane build_upload_testflight --verbose
+    # just adding for a test commit
   artifacts:
     paths:
       - CarmenGrid.ipa
