@@ -1,3 +1,4 @@
+# all the stages
 stages:
   - build
 
