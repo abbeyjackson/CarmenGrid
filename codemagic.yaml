@@ -1,3 +1,4 @@
+// pr rule trigger test
 workflows:
     sample-workflow:
         name: Codemagic Sample Workflow
