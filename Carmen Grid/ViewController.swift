@@ -675,3 +675,4 @@ extension Persistance {
         Log.logInfo("Updating user defaults>> visibleIndex: \(visibleIndex), rotation: \(rotation?.rawValue ?? "none"), photos count: \(details.count)")
     }
 }
+
