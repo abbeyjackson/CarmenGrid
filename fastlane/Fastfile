@@ -70,7 +70,7 @@ platform :ios do
 
     import_certificate(
       certificate_path: ENV["SIGNING_KEY_FILE_PATH"],
-      certificate_password: ENV["SIGNING_KEY_PASSWORD"],
+      # certificate_password: ENV["SIGNING_KEY_PASSWORD"],
       keychain_name: keychain_name,
       keychain_password: keychain_password
     )
@@ -89,12 +89,14 @@ platform :ios do
     team_id = CredentialsManager::AppfileConfig.try_fetch_value(:team_id)
 
     profile_name = "Runway and Github"
+    configuration = "Release"
+    app_name = "Carmen Grid"
 
     # temporarily updates code signing settings on xcodeproject to ensure correct mapping of configurations for distribution build
     update_code_signing_settings(
       use_automatic_signing: false,
       team_id: team_id,
-      targets: ["{{ targets }}"], # all targets to update code signing settings for
+      targets: [app_name], # all targets to update code signing settings for
       code_sign_identity: "iOS Distribution: Abbey Jackson", # name of certificate included in the provisioning profile
       profile_name: profile_name,
       bundle_identifier: identifier,
@@ -102,9 +104,9 @@ platform :ios do
     )
 
     gym(
-      {{ workspace_parameter }} # workspace: "/path/to/workspace",
-      scheme: "{{ scheme_name }}",
-      configuration: "{{ build_configuration }}",
+      # {{ workspace_parameter }} # workspace: "/path/to/workspace",
+      scheme: app_name,
+      configuration: configuration,
       export_method: "app-store", # options are app-store, ad-hoc, package, enterprise, development, validation, developer-id and mac-application
       export_options: {
         provisioningProfiles: {
