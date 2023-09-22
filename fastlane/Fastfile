@@ -94,17 +94,16 @@ platform :ios do
     update_code_signing_settings(
       use_automatic_signing: false,
       team_id: team_id,
-      targets: ["{{ targets }}"], # all targets to update code signing settings for
+      targets: ["CarmenGrid"], # all targets to update code signing settings for
       code_sign_identity: "iOS Distribution: Abbey Jackson", # name of certificate included in the provisioning profile
       profile_name: profile_name,
       bundle_identifier: identifier,
-      build_configurations: ["{{ build_configuration }}"] # the release build configuration
+      build_configurations: ["Release"] # the release build configuration
     )
 
     gym(
-      {{ workspace_parameter }} # workspace: "/path/to/workspace",
-      scheme: "{{ scheme_name }}",
-      configuration: "{{ build_configuration }}",
+      scheme: "CarmenGrid",
+      configuration: "Release",
       export_method: "app-store", # options are app-store, ad-hoc, package, enterprise, development, validation, developer-id and mac-application
       export_options: {
         provisioningProfiles: {

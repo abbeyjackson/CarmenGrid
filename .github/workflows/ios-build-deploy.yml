@@ -25,8 +25,8 @@ jobs:
               with:
                   xcode-version: latest-stable
 
-            - name: Install package dependencies via cocoapods
-              run: pod install
+#            - name: Install package dependencies via cocoapods
+#              run: pod install
 
             - name: Decode signing certificate into a file
               env:
