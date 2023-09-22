@@ -11,13 +11,13 @@ jobs:
         steps:
             - uses: actions/checkout@v3.3.0
 
-            - name: Set up ruby env
-              uses: ruby/setup-ruby@v1
-              with:
-                  ruby-version: { RUBY_VERSION }
+            # - name: Set up ruby env
+              # uses: ruby/setup-ruby@v1
+              # with:
+                  # ruby-version: { RUBY_VERSION }
 
-            - name: Install ruby dependencies
-              run: bundle install
+            # - name: Install ruby dependencies
+              # run: bundle install
 
             # Can be used to specify an older or beta version of Xcode if needed
             - name: Setup Xcode version
